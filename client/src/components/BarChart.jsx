@@ -1,4 +1,4 @@
-import { useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../theme";
 import { mockBarData as data } from "../data/mockData";
@@ -8,6 +8,7 @@ const BarChart = ({ isDashboard = false }) => {
   const colors = tokens(theme.palette.mode);
 
   return (
+    <Box height="90%">
     <ResponsiveBar
       data={data}
       theme={{
@@ -124,6 +125,7 @@ const BarChart = ({ isDashboard = false }) => {
         return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
       }}
     />
+    </Box>
   );
 };
 
