@@ -9,10 +9,11 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-// import Visibility from '@mui/icons-material/Visibility'
-// import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { tokens } from '../theme'
 import { useTheme } from '@emotion/react'
+import { Grid, IconButton, InputAdornment, OutlinedInput } from '@mui/material'
 
 const initialValues = {
   email: '',
@@ -29,15 +30,18 @@ const checkoutSchema = yup.object().shape({
 export default function Auth() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [login, setLogin] = React.useState(false)
   const handleFormSubmit = (values) => {
     console.log(values)
   }
 
-  // const handleClickShowPassword = () => setShowPassword((show) => !show)
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const inputStyles = {
     background: colors.primary[400], // Change this to your desired background color
   }
+  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -53,7 +57,7 @@ export default function Auth() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          {login ? 'Sign in' : 'Register'}
         </Typography>
 
         <Formik
@@ -71,6 +75,25 @@ export default function Auth() {
           }) => (
             <form onSubmit={handleSubmit}>
               <Box sx={{ mt: 1 }}>
+                {!login && (
+                  <TextField
+                    InputProps={{
+                      style: inputStyles,
+                    }}
+                    margin="normal"
+                    fullWidth
+                    required
+                    id="name"
+                    type="name"
+                    label="Username"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.name}
+                    name="name"
+                    error={!!touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                  />
+                )}
                 <TextField
                   InputProps={{
                     style: inputStyles,
@@ -88,6 +111,25 @@ export default function Auth() {
                   error={!!touched.email && !!errors.email}
                   helperText={touched.email && errors.email}
                 />
+                {!login && (
+                  <TextField
+                    InputProps={{
+                      style: inputStyles,
+                    }}
+                    margin="normal"
+                    fullWidth
+                    required
+                    id="contact"
+                    type="contact"
+                    label="Phone Number"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.contact}
+                    name="contact"
+                    error={!!touched.contact && !!errors.contact}
+                    helperText={touched.contact && errors.contact}
+                  />
+                )}
                 <TextField
                   InputProps={{
                     style: inputStyles,
@@ -96,7 +138,7 @@ export default function Auth() {
                   fullWidth
                   required
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   label="Password"
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -105,6 +147,48 @@ export default function Auth() {
                   error={!!touched.password && !!errors.password}
                   helperText={touched.password && errors.password}
                 />
+                {!login && (
+                  <TextField
+                    InputProps={{
+                      style: inputStyles,
+                    }}
+                    margin="normal"
+                    fullWidth
+                    required
+                    id="ConfirmPassword"
+                    type="ConfirmPassword"
+                    label="Confirm Password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.ConfirmPassword}
+                    name="ConfirmPassword"
+                    error={
+                      !!touched.ConfirmPassword && !!errors.ConfirmPassword
+                    }
+                    helperText={
+                      touched.ConfirmPassword && errors.ConfirmPassword
+                    }
+                  />
+                )}
+                <Grid container>
+                  <Grid item xs>
+                    <Link href="#" variant="body2" color="secondary">
+                      Forgot password?
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setLogin((prev) => !prev)}
+                      variant="body2"
+                      color="secondary"
+                    >
+                      {login
+                        ? "Don't have an account? Sign Up"
+                        : 'Already have an account? Log In'}
+                    </Link>
+                  </Grid>
+                </Grid>
                 <Button
                   type="submit"
                   fullWidth
@@ -112,7 +196,7 @@ export default function Auth() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In
+                  {login ? 'Sign in' : 'Register'}
                 </Button>
               </Box>
             </form>
