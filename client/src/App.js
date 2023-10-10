@@ -16,8 +16,6 @@ function App() {
   const [theme, colorMode] = useMode();
   const location = useLocation();
 
-  const [isSidebar, setIsSidebar] = useState(true);
-
   const shouldShowSidebar = () => {
     return location.pathname !== '/login';
   };
