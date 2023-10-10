@@ -9,39 +9,49 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { tokens } from '../theme'
 import { useTheme } from '@emotion/react'
-import { Grid, IconButton, InputAdornment, OutlinedInput } from '@mui/material'
+import { Grid } from '@mui/material'
 
 const initialValues = {
   email: '',
   password: '',
+  name: '',
+  contact: '',
+  confirmPassword: '',
 }
 const checkoutSchema = yup.object().shape({
   password: yup
     .string('Enter your password')
     .min(8, 'Password should be of minimum 8 characters length')
     .required('Password is required'),
+  confirmPassword: yup
+    .string('Enter your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
   email: yup.string().email('invalid email').required('Email is required'),
+  name: yup
+    .string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+  contact: yup
+    .string()
+    .required('No contact info provided.')
+    .min(10, 'phone number is missing - should be 10.'),
 })
 
 export default function Auth() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const [showPassword, setShowPassword] = React.useState(false)
   const [login, setLogin] = React.useState(false)
+
   const handleFormSubmit = (values) => {
     console.log(values)
   }
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show)
-
   const inputStyles = {
     background: colors.primary[400], // Change this to your desired background color
   }
-  
 
   return (
     <Container component="main" maxWidth="xs">
@@ -138,7 +148,7 @@ export default function Auth() {
                   fullWidth
                   required
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type="password"
                   label="Password"
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -155,18 +165,18 @@ export default function Auth() {
                     margin="normal"
                     fullWidth
                     required
-                    id="ConfirmPassword"
-                    type="ConfirmPassword"
+                    id="confirmPassword"
+                    type="password"
                     label="Confirm Password"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.ConfirmPassword}
-                    name="ConfirmPassword"
+                    value={values.confirmPassword}
+                    name="confirmPassword"
                     error={
-                      !!touched.ConfirmPassword && !!errors.ConfirmPassword
+                      !!touched.confirmPassword && !!errors.confirmPassword
                     }
                     helperText={
-                      touched.ConfirmPassword && errors.ConfirmPassword
+                      touched.confirmPassword && errors.confirmPassword
                     }
                   />
                 )}
