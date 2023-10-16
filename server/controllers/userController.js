@@ -29,18 +29,25 @@ export const authUser = asyncHandler(async (req, res) => {
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
     console.log(req.body)
-    const { name, email, password } = req.body;  
+    const { firstName,lastName,userName, email, password,contact,city,postalCode,street,role } = req.body;  
     const userExists = await User.findOne({ email })
   
-    if (userExists) {
-      res.status(400)
-      throw new Error("User already exists")
-    }
-  
+    if (userExists)  return res.status(400).json({ message: 'User with this email already exists' });
+
+    const userUsername = userName || (firstName + lastName);
+    const userRole = role || 'user';
+
     const user = await User.create({
-      name,
+      userName:userUsername,
       email,
-      password
+      password,
+      contactno:contact,
+      role:userRole,
+      address: {
+        city,
+        postalCode,
+        street,
+      },
     })
   
     if (user) {

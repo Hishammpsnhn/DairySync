@@ -34,6 +34,9 @@ function App() {
               <Route path='/line' element={<LineChart />} />
               <Route path='/bar' element={<BarChart />} />
               <Route path='/form' element={<Form />} />
+
+              {/* seller */}
+              <Route path='/seller' element={<Dashboard />} />
             </Routes>
           </main>
         </div>

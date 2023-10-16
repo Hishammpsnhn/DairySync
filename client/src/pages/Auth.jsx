@@ -16,7 +16,7 @@ import { Grid } from '@mui/material'
 const initialValues = {
   email: '',
   password: '',
-  name: '',
+  userName: '',
   contact: '',
   confirmPassword: '',
 }
@@ -29,7 +29,7 @@ const checkoutSchema = yup.object().shape({
     .string('Enter your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
   email: yup.string().email('invalid email').required('Email is required'),
-  name: yup
+  userName: yup
     .string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
@@ -93,15 +93,15 @@ export default function Auth() {
                     margin="normal"
                     fullWidth
                     required
-                    id="name"
-                    type="name"
+                    id="userName"
+                    type="userName"
                     label="Username"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.name}
-                    name="name"
-                    error={!!touched.name && !!errors.name}
-                    helperText={touched.name && errors.name}
+                    value={values.userName}
+                    name="userName"
+                    error={!!touched.userName && !!errors.userName}
+                    helperText={touched.userName && errors.userName}
                   />
                 )}
                 <TextField
