@@ -8,10 +8,10 @@ import { registerSeller } from '../actions/userActions'
 const Form = () => {
   const isNonMobile = useMediaQuery('(min-width:600px)')
 
-  const handleFormSubmit = (values) => {
-    console.log(values)
-    registerSeller(values)
-  }
+  const handleFormSubmit = (values, { resetForm }) => {
+    registerSeller(values);
+    resetForm({ values: initialValues });
+  };
 
   return (
     <Box m="20px">
@@ -76,7 +76,20 @@ const Form = () => {
                 name="email"
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
-                sx={{ gridColumn: 'span 4' }}
+                sx={{ gridColumn: 'span 2' }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="password"
+                label="Password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: 'span 2' }}
               />
               <TextField
                 fullWidth
@@ -150,6 +163,9 @@ const checkoutSchema = yup.object().shape({
   firstName: yup.string().required('required'),
   lastName: yup.string().required('required'),
   email: yup.string().email('invalid email').required('required'),
+  password: yup
+  .string('Enter your password')
+  .min(8, 'Password should be of minimum 8 characters length'),
   contact: yup
     .string()
     .matches(phoneRegExp, 'Phone number is not valid')
@@ -165,6 +181,7 @@ const initialValues = {
   firstName: '',
   lastName: '',
   email: '',
+  password: '',
   contact: '',
   street: '',
   city: '',

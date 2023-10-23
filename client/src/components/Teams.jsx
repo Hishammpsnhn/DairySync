@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../theme";
@@ -7,10 +7,16 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "./Header";
+import { useDispatch, useSelector } from "react-redux";
+import { teams } from "../actions/userActions";
+import { useNavigate } from "react-router-dom";
 
 const Sellers = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.user.user)
     const columns = [
       { field: "id", headerName: "ID" },
       {
@@ -68,6 +74,14 @@ const Sellers = () => {
         },
       },
     ];
+
+    useEffect(()=>{
+      if(user && user.role === "admin"){
+        dispatch(teams)
+      }else{
+        navigate("/login")
+      }
+    },[dispatch,navigate,user])
   
   return(
     <Box m="20px">

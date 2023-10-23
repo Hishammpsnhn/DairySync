@@ -18,9 +18,9 @@ export const authUser = asyncHandler(async (req, res) => {
   if (user && await user.matchPassword(password)) {
     res.json({
       _id: user._id,
-      name: user.name,
+      name: user.userName,
       email: user.email,
-      isAdmin: user.isAdmin,
+      role: user.role,
       token: generateToken(user._id),
     })
   } else {
@@ -34,11 +34,11 @@ export const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 export const registerUser = asyncHandler(async (req, res) => {
-  const { firstName, lastName, userName, email, password, contact, city, postalCode, street, role } = req.body;
+  
+  const { firstName, lastName, userName, email, password, contact, city, postalCode, street, role } = req.body.userData;
 
   const userUsername = userName || (firstName + lastName);
   const userRole = role || 'user';
-
   if (!userUsername || !email || !password || !contact) {
     res.status(404)
     throw new Error("credentials missing or invalid");

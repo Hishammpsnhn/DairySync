@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
@@ -13,19 +13,33 @@ import { tokens } from '../theme'
 import { useTheme } from '@emotion/react'
 import { Grid } from '@mui/material'
 import { login, registerUser } from '../actions/userActions'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export default function Auth() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation();
+
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+
   const [isLogin, setIsLogin] = React.useState(false)
 
   const handleFormSubmit = (values) => {
-    isLogin ? login(values) : registerUser(values)
+    isLogin ? dispatch(login(values)) : dispatch(registerUser(values))
   }
 
   const inputStyles = {
     background: colors.primary[400], // Change this to your desired background color
   }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate, ]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -47,7 +61,9 @@ export default function Auth() {
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
-          validationSchema={isLogin ? checkoutLoginSchema : checkoutRegisterSchema}
+          validationSchema={
+            isLogin ? checkoutLoginSchema : checkoutRegisterSchema
+          }
         >
           {({
             values,
@@ -226,7 +242,7 @@ const checkoutRegisterSchema = yup.object().shape({
   confirmPassword: yup
     .string('Enter your password')
     .oneOf([yup.ref('password')], 'Passwords must match'),
-  
+
   userName: yup
     .string()
     .min(2, 'Too Short!')

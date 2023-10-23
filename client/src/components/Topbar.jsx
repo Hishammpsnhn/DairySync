@@ -7,11 +7,14 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined'
 import PersonOutlined from '@mui/icons-material/PersonOutlined'
 import DarkModeOutlined from '@mui/icons-material/DarkModeOutlined'
 import LightModeOutlined from '@mui/icons-material/LightModeOutlined'
+import { useSelector } from 'react-redux'
 
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
+
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
 
   return (
     <Box display="flex" justifyContent="space-between" p={2} height="10%">
@@ -36,9 +39,11 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlined />
         </IconButton>
-        <IconButton>
-          <PersonOutlined />
-        </IconButton>
+        {isAuthenticated && (
+          <IconButton>
+            <PersonOutlined />
+          </IconButton>
+        )}
       </Box>
     </Box>
   )

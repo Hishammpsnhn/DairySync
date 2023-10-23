@@ -3,7 +3,7 @@ import { tokens } from '../theme'
 import React, { useState } from "react";
 import { Box, IconButton,Typography } from "@mui/material";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -18,10 +18,12 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import ProfileImage from '../assets/th.jpeg'
+import { useSelector } from "react-redux";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    
     return (
       <MenuItem
         active={selected === title}
@@ -40,8 +42,14 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 function Sidebar() {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const navigate = useNavigate()
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [selected, setSelected] = useState("Dashboard");
+    const user = useSelector((state) => state.user.user)
+    
+    if(!user){
+      navigate("/login")
+    }
     
   return (
     <Box
@@ -81,8 +89,8 @@ function Sidebar() {
               alignItems="center"
               ml="15px"
             >
-              <Typography variant="h3" color={colors.grey[100]}>
-                ADMINIS
+              <Typography variant="h3" textTransform="uppercase" color={colors.grey[100]}>
+                {user?.role}
               </Typography>
               <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                 <MenuOutlinedIcon />
@@ -108,11 +116,12 @@ function Sidebar() {
                 color={colors.grey[100]}
                 fontWeight="bold"
                 sx={{ m: "10px 0 0 0" }}
+                textTransform='capitalize'
               >
-                Name
+                {user?.name}
               </Typography>
-              <Typography variant="h5" color={colors.greenAccent[500]}>
-                Admin
+              <Typography variant="h5" textTransform="uppercase" color={colors.greenAccent[500]}>
+                {user?.role}
               </Typography>
             </Box>
           </Box>
@@ -121,7 +130,7 @@ function Sidebar() {
         <Box paddingLeft={isCollapsed ? undefined : "10%"}>
           <Item
             title="Dashboard"
-            to="/"
+            to="/dashboard"
             icon={<HomeOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
@@ -136,7 +145,7 @@ function Sidebar() {
           </Typography>
           <Item
             title="Manage Team"
-            to="/sellers"
+            to="/teams"
             icon={<PeopleOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
