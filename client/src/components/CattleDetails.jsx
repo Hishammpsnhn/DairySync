@@ -13,65 +13,73 @@ import { tokens } from '../theme'
 import PetsIcon from '@mui/icons-material/Pets'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import styled from '@emotion/styled'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
-import CakeIcon from '@mui/icons-material/Cake';
-import MaleIcon from '@mui/icons-material/Male';
-import EMobiledataIcon from '@mui/icons-material/EMobiledata';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import LocalAtmIcon from '@mui/icons-material/LocalAtm'
+import CakeIcon from '@mui/icons-material/Cake'
+import MaleIcon from '@mui/icons-material/Male'
+import EMobiledataIcon from '@mui/icons-material/EMobiledata'
+import AutorenewIcon from '@mui/icons-material/Autorenew'
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import LocalAtm from '@mui/icons-material/LocalAtm'
 import Male from '@mui/icons-material/Male'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCow } from '@fortawesome/free-solid-svg-icons'
 
-const Item = ({ title, value, icon}) => {
+const Item = ({ title, value, icon }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
   return (
-   
-      <Box p="10px">
-        <Box alignItems="center">
-          <Box display="flex" alignItems="start">
+    <Box p="10px">
+      <Box alignItems="center">
+        <Box display="flex" alignItems="start">
           {icon && (
-            <span style={{
-              color: colors.grey[400],
-              fontSize: '15px',
-              alignItems:"center",
-              display:"flex"
-            }}>
+            <span
+              style={{
+                color: colors.grey[400],
+                fontSize: '15px',
+                alignItems: 'center',
+                display: 'flex',
+              }}
+            >
               {icon}
-              <Typography marginLeft="5px" variant="h6" sx={{ color: colors.grey[400] }}>
-              {title}
-            </Typography>
+              <Typography
+                marginLeft="5px"
+                variant="h6"
+                sx={{ color: colors.grey[400] }}
+              >
+                {title}
+              </Typography>
             </span>
           )}
-           
-          </Box>
-          <Typography variant="h5" fontWeight="bold" sx={{ color: colors.grey[300] }}>
-            {value}
-          </Typography>
         </Box>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{ color: colors.grey[300] }}
+        >
+          {value}
+        </Typography>
       </Box>
-  
+    </Box>
   )
 }
 
 const CattleDetails = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const iconStyle = {
+    color: colors.greenAccent[600],
+    fontSize: '22px',
+    marginRight: '10px',
+  }
 
   return (
     <Box>
       <Box m="20px" display="flex" justifyContent="space-between">
         <Box display="flex" alignItems="center">
           {' '}
-          <PetsIcon
-            sx={{
-              color: colors.greenAccent[600],
-              fontSize: '22px',
-              marginRight: '10px',
-            }}
-          />{' '}
+          <FontAwesomeIcon icon={faCow} style={iconStyle} />{' '}
           <Typography
             variant="h4"
             fontWeight="bold"
@@ -108,22 +116,34 @@ const CattleDetails = () => {
           //columnSpacing={{ xs: 1, sm: 2, md: 3 }}
         >
           <Grid item xs={6}>
-            <Item title="Purchase Date" value="Aug 24th, 2015" icon={<CalendarMonthIcon/>} />
+            <Item
+              title="Purchase Date"
+              value="Aug 24th, 2015"
+              icon={<CalendarMonthIcon />}
+            />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Purchase Price" value="$25,000" icon={<LocalAtm/>} />
+            <Item title="Purchase Price" value="$25,000" icon={<LocalAtm />} />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Age" value="334 Days" icon={<CakeIcon/>} />
+            <Item title="Age" value="334 Days" icon={<CakeIcon />} />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Sex" value="Female" icon={<Male/>}/>
+            <Item title="Sex" value="Female" icon={<Male />} />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Breed" value="Beltted Gallaoway" icon={<EMobiledataIcon/>}/>
+            <Item
+              title="Breed"
+              value="Beltted Gallaoway"
+              icon={<EMobiledataIcon />}
+            />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Breeding Status" value="Pregnant" icon={<AutorenewIcon/>} />
+            <Item
+              title="Breeding Status"
+              value="Pregnant"
+              icon={<AutorenewIcon />}
+            />
           </Grid>
         </Grid>
       </Box>

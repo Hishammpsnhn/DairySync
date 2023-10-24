@@ -6,7 +6,7 @@ import { mockDataTeam } from "../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import Header from "./Header";
+import Header from "../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { teams } from "../actions/userActions";
 import { useNavigate } from "react-router-dom";

@@ -1,20 +1,20 @@
 
 import { ColorModeContext, useMode } from './theme'
 import { ThemeProvider, CssBaseline } from '@mui/material'
-import Sidebar from './components/Sidebar'
-import Topbar from './components/Topbar'
+import Sidebar from './components/constant/Sidebar'
+import Topbar from './components/constant/Topbar'
 import { useState } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import Teams from './components/Teams'
-import Form from './components/Form'
+import Teams from './pages/Teams'
+import SellerRegForm from './components/SellerRegForm'
 import Dashboard from './pages/Dashboard'
 import LineChart from './components/LineChart'
 import BarChart from './components/BarChart'
 import Auth from './pages/Auth'
 import { useSelector } from 'react-redux'
 import RequireAuth from './components/RequireAuth'
-import CattleDetails from './components/CattleDetails'
-import { CattleDetailsPage } from './pages/CattleDetailsPage'
+import CattleDetailsPage from './pages/CattleDetailsPage'
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -44,10 +44,10 @@ function App() {
               <Route path='/teams' element={<RequireAuth><Teams /></RequireAuth>} />
               <Route path='/line' element={<RequireAuth><LineChart /></RequireAuth>} />
               <Route path='/bar' element={<RequireAuth><BarChart /></RequireAuth>} />
-              <Route path='/form' element={<RequireAuth><Form /></RequireAuth>} />
+              <Route path='/form' element={<RequireAuth><SellerRegForm /></RequireAuth>} />
 
               {/* seller */}
-              <Route path='/cattledetails' element={< CattleDetailsPage/>} />
+              <Route path='/cattle-details' element={<RequireAuth>< CattleDetailsPage /></RequireAuth>} />
             </Routes>
           </main>
         </div>

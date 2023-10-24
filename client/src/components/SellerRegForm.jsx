@@ -5,7 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import Header from './Header'
 import { registerSeller } from '../actions/userActions'
 
-const Form = () => {
+const SellerRegForm = () => {
   const isNonMobile = useMediaQuery('(min-width:600px)')
 
   const handleFormSubmit = (values, { resetForm }) => {
@@ -189,4 +189,4 @@ const initialValues = {
   role:'seller'
 }
 
-export default Form
+export default SellerRegForm

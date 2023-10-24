@@ -1,6 +1,6 @@
 import { Box, IconButton, InputBase, useTheme } from '@mui/material'
 import React, { useContext } from 'react'
-import { ColorModeContext, tokens } from '../theme'
+import { ColorModeContext, tokens } from '../../theme'
 import SearchIcon from '@mui/icons-material/Search'
 import NotificationsOutlined from '@mui/icons-material/NotificationsOutlined'
 import SettingsOutlined from '@mui/icons-material/SettingsOutlined'
