@@ -48,7 +48,7 @@ function Sidebar() {
     const user = useSelector((state) => state.user.user)
     
     if(!user){
-      navigate("/login")
+      navigate("/")
     }
     
   return (

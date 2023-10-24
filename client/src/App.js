@@ -13,6 +13,8 @@ import BarChart from './components/BarChart'
 import Auth from './pages/Auth'
 import { useSelector } from 'react-redux'
 import RequireAuth from './components/RequireAuth'
+import CattleDetails from './components/CattleDetails'
+import { CattleDetailsPage } from './pages/CattleDetailsPage'
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -45,7 +47,7 @@ function App() {
               <Route path='/form' element={<RequireAuth><Form /></RequireAuth>} />
 
               {/* seller */}
-              <Route path='/seller' element={<Dashboard />} />
+              <Route path='/cattledetails' element={< CattleDetailsPage/>} />
             </Routes>
           </main>
         </div>
