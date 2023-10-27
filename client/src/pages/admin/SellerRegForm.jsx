@@ -4,12 +4,14 @@ import * as yup from 'yup'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Header from '../../components/Header'
 import { registerSeller } from '../../actions/userActions'
+import { useDispatch } from 'react-redux'
 
 const SellerRegForm = () => {
   const isNonMobile = useMediaQuery('(min-width:600px)')
+  const dispatch = useDispatch();
 
   const handleFormSubmit = (values, { resetForm }) => {
-    registerSeller(values);
+    dispatch(registerSeller(values));
     resetForm({ values: initialValues });
   };
 

@@ -16,27 +16,30 @@ export const login = ({ email, password }) => async (dispatch) => {
     console.error('Error:', error);
   }
 };
-export const registerUser = ({ email, password, userName, contact }) => async (dispatch) => {
+export const registerUser = (userData) => async (dispatch) => {
   try {
     const { data } = await axios.post('/api/users', {
-      email,
-      password,
-      userName,
-      contact
+      userData
     });
-    console.log(data);
+    dispatch(loginSuccess(data))
+    localStorage.setItem('userInfo', JSON.stringify(data));
+
   } catch (error) {
+    dispatch(loginFailure());
     console.error('Error:', error);
   }
 };
 
-export const registerSeller = async (userData) => {
+export const registerSeller = (userData) => async (dispatch) => {
   try {
     const { data } = await axios.post('/api/users', {
       userData
     });
     console.log(data);
+    dispatch(loginSuccess(data))
+    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
+    dispatch(loginFailure());
     console.error('Error:', error);
   }
 };
@@ -44,7 +47,7 @@ export const registerSeller = async (userData) => {
 export const teams = async (dispatch, getState) => {
   // redux
   try {
-    const {user: { user }} = getState();
+    const { user: { user } } = getState();
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +55,7 @@ export const teams = async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get('/api/users',config);
+    const { data } = await axios.get('/api/users', config);
     console.log(data);
   } catch (error) {
     console.error('Error:', error);

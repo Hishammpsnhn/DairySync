@@ -1,7 +1,7 @@
 import { useTheme } from '@emotion/react'
 import { tokens } from '../../theme'
 import React, { useState } from 'react'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Avatar, Box, IconButton, Typography } from '@mui/material'
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar'
 import { Link, useNavigate } from 'react-router-dom'
 import 'react-pro-sidebar/dist/css/styles.css'
@@ -108,13 +108,7 @@ function Sidebar() {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={ProfileImage}
-                  style={{ cursor: 'pointer', borderRadius: '50%' }}
-                />
+              <Avatar sx={{height:'80px',width:"80px",fontSize:"50px"}}>{user?.name.charAt(0).toUpperCase()}</Avatar>
               </Box>
               <Box textAlign="center">
                 <Typography
