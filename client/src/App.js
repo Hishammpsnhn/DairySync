@@ -5,15 +5,16 @@ import Sidebar from './components/constant/Sidebar'
 import Topbar from './components/constant/Topbar'
 import { useState } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import Teams from './pages/Teams'
-import SellerRegForm from './components/SellerRegForm'
+import Teams from './pages/admin/Teams'
+import SellerRegForm from './pages/admin/SellerRegForm'
 import Dashboard from './pages/Dashboard'
 import LineChart from './components/LineChart'
 import BarChart from './components/BarChart'
 import Auth from './pages/Auth'
 import { useSelector } from 'react-redux'
 import RequireAuth from './components/RequireAuth'
-import CattleDetailsPage from './pages/CattleDetailsPage'
+import CattleDetailsPage from './pages/seller/CattleDetailsPage'
+import CattleRegForm from './pages/seller/CattleRegForm'
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
 
               {/* seller */}
               <Route path='/cattle-details' element={<RequireAuth>< CattleDetailsPage /></RequireAuth>} />
+              <Route path='/cattle-reg-form' element={<RequireAuth>< CattleRegForm /></RequireAuth>} />
             </Routes>
           </main>
         </div>

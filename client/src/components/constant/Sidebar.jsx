@@ -19,8 +19,8 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined'
 import ProfileImage from '../../assets/th.jpeg'
 import { useSelector } from 'react-redux'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCow } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCow } from '@fortawesome/free-solid-svg-icons'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -50,6 +50,7 @@ function Sidebar() {
 
   if (!user) {
     navigate('/')
+    return
   }
 
   return (
@@ -152,7 +153,7 @@ function Sidebar() {
             >
               Data
             </Typography>
-            {user.role === 'admin' && (
+            {user?.role === 'admin' && (
               <Item
                 title="Manage Team"
                 to="/teams"
@@ -161,11 +162,11 @@ function Sidebar() {
                 setSelected={setSelected}
               />
             )}
-            {user.role === 'seller' && (
+            {user?.role === 'seller' && (
               <Item
                 title="Cattle Details"
                 to="/cattle-details"
-                icon={  <FontAwesomeIcon icon={faCow} />}
+                icon={<FontAwesomeIcon icon={faCow} />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -192,13 +193,26 @@ function Sidebar() {
             >
               Pages
             </Typography>
-            <Item
-              title="Profile Form"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {user?.role === 'admin' && (
+              <Item
+                title="Profile Form"
+                to="/form"
+                icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+            {user?.role === 'seller' && (
+              <Item
+                title="Cattle Add Form"
+                to="/cattle-reg-form"
+                icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+            
+
             <Item
               title="Calendar"
               to="/calendar"

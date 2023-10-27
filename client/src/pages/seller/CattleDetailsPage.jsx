@@ -1,9 +1,9 @@
 import React from 'react'
-import CattleDetails from '../components/CattleDetails'
+import CattleDetails from '../../components/CattleDetails'
 import { Box, Grid } from '@mui/material'
 import { useTheme } from '@emotion/react'
-import { tokens } from '../theme'
-import Header from '../components/Header'
+import { tokens } from '../../theme'
+import Header from '../../components/Header'
 
 const CattleDetailsPage = () => {
   const theme = useTheme()

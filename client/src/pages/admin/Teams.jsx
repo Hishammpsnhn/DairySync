@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { tokens } from "../theme";
-import { mockDataTeam } from "../data/mockData";
+import { tokens } from "../../theme";
+import { mockDataTeam } from "../../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import Header from "../components/Header";
+import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { teams } from "../actions/userActions";
+import { teams } from "../../actions/userActions";
 import { useNavigate } from "react-router-dom";
 
 const Sellers = () => {
