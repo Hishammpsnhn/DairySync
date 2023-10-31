@@ -38,6 +38,7 @@ export default function Auth() {
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
+      return;
     }
   }, [isAuthenticated, navigate, ]);
 

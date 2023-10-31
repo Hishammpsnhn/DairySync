@@ -4,7 +4,6 @@ import { Navigate } from "react-router-dom";
 
 const RequireAuth = ({children}) => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
-    console.log(isAuthenticated)
     if (!isAuthenticated) {
         return <Navigate to='/' />
         

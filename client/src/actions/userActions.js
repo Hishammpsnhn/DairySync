@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { loginFailure, loginStart, loginSuccess } from '../reducers/userReducer';
 import { RootState } from '../store';
+import { fetchTeamListFailure, fetchTeamListStart, fetchTeamListSuccess } from '../reducers/teamListReducer';
 
 export const login = ({ email, password }) => async (dispatch) => {
   dispatch(loginStart());
@@ -45,7 +46,8 @@ export const registerSeller = (userData) => async (dispatch) => {
 };
 
 export const teams = async (dispatch, getState) => {
-  // redux
+  console.log("team called ")
+  dispatch(fetchTeamListStart);
   try {
     const { user: { user } } = getState();
     const config = {
@@ -56,8 +58,10 @@ export const teams = async (dispatch, getState) => {
     };
 
     const { data } = await axios.get('/api/users', config);
-    console.log(data);
+    console.log(data)
+    dispatch(fetchTeamListSuccess(data))
   } catch (error) {
     console.error('Error:', error);
+    dispatch(fetchTeamListFailure(error));
   }
 };
