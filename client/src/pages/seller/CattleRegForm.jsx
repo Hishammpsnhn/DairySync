@@ -4,6 +4,8 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { useState } from 'react'
 import { tokens } from '../../theme'
 import Header from '../../components/Header'
+import { secondDataCompletion } from '../../utils/secondAutoCompletion'
+import { animalTypeOptions } from '../../utils/Data'
 
 const CattleRegForm = () => {
   const isNonMobile = useMediaQuery('(min-width:600px)')
@@ -12,10 +14,7 @@ const CattleRegForm = () => {
   const [formData, setFormData] = useState(initialValues)
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
-  const [animalTypeOptions] = useState(['Cattle', 'Buffaloes', 'Goat'])
-  const [cowBreedOptions] = useState(cattleBreedsInKerala)
-  const [goatBreedOptions] = useState(goatBreedsInKerala)
-  const [buffaloOptions] = useState(buffaloBreedsInKerala)
+
 
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
@@ -31,15 +30,8 @@ const CattleRegForm = () => {
       fieldName === 'breedingStatus'
     ) {
       setFormData({ ...formData, [fieldName]: newValue })
-      if (newValue === 'Cattle') {
-        setSecondAutocompleteOptions(cowBreedOptions)
-      } else if (newValue === 'Goat') {
-        setSecondAutocompleteOptions(goatBreedOptions)
-      } else if (newValue === 'Buffaloes') {
-        setSecondAutocompleteOptions(buffaloOptions)
-      } else {
-        setSecondAutocompleteOptions([])
-      }
+      const breeds = secondDataCompletion(newValue)
+      setSecondAutocompleteOptions(breeds)
     } else {
       setFormData({ ...formData, [fieldName]: updatedValue })
     }
@@ -51,7 +43,6 @@ const CattleRegForm = () => {
       formData.breedingStatus &&
       formData.dateOfBirth &&
       formData.purchasePrice &&
-      formData.sex &&
       formData.cattleWeight &&
       formData.animalIdentification &&
       formData.animalType &&
@@ -265,7 +256,7 @@ const CattleRegForm = () => {
               onChange={handleFieldChange('dateAdministered')}
               value={FormData.dateAdministered}
               name="lastName"
-              sx={{ gridColumn:  'span 2' }}
+              sx={{ gridColumn: 'span 2' }}
             />
           )}
           <TextField
@@ -295,21 +286,7 @@ const CattleRegForm = () => {
 }
 export default CattleRegForm
 
-const cattleBreedsInKerala = [
-  'Vechur',
-  'Ongole',
-  'Malnad Gidda',
-  'Kerala Jersey',
-]
-const goatBreedsInKerala = ['Jamnapari', 'Boer', 'Malabari', 'Black Bengal']
-const buffaloBreedsInKerala = [
-  'Murrah Buffalo',
-  'Surti Buffalo',
-  'Jaffarabadi Buffalo',
-  'Mehsana Buffalo',
-  'Nili-Ravi Buffalo',
-  'Pandharpuri Buffalo',
-]
+
 
 const initialValues = {
   animalType: '',
