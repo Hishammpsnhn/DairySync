@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
-
+import Header from './Header'
 import Modal from '@mui/material/Modal'
-import { Autocomplete, TextField } from '@mui/material'
+import { Autocomplete, Button, TextField } from '@mui/material'
+import { secondDataCompletion } from '../utils/secondAutoCompletion'
 
 const style = {
   position: 'absolute',
@@ -20,6 +21,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
   const [formData, setFormData] = useState(initialValues)
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
+  const [thirdAutocompleteOptions, setthirdAutocompleteOptions] = useState([])
 
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
@@ -28,22 +30,43 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
         : newValue
       : newValue
     console.log(fieldName, event, newValue, updatedValue)
-    if (fieldName === 'category' || fieldName === 'breed') {
+    if (
+      fieldName === 'category' ||
+      fieldName === 'breed' ||
+      fieldName === 'type'
+    ) {
       setFormData({ ...formData, [fieldName]: newValue })
       if (newValue === 'Milk') {
-        setSecondAutocompleteOptions(['cattle', 'buffalo', 'goat'])
+        setSecondAutocompleteOptions(['Cattle', 'Buffaloes', 'Goat'])
       } else if (newValue === 'Ghee') {
-        setSecondAutocompleteOptions(['ghee1', 'ghee2'])
+        setSecondAutocompleteOptions(['Cow Ghee', 'Buffalo Ghee'])
       } else if (newValue === 'Butter') {
-        setSecondAutocompleteOptions(['butter1', 'butter2'])
+        setSecondAutocompleteOptions(['Salted Butter', 'Unsalted Butter'])
       } else if (newValue === 'Paneer') {
-        setSecondAutocompleteOptions(['paneer1', 'paneer2'])
+        setSecondAutocompleteOptions([
+          'Regular Paneer',
+          'Malai Paneer',
+          'Smoked Paneer',
+        ])
       }
+      const breeds = secondDataCompletion(newValue)
+      console.log(breeds)
+      setthirdAutocompleteOptions(breeds)
     } else {
       setFormData({ ...formData, [fieldName]: updatedValue })
     }
   }
-
+  const handleFormSubmit = () => {
+    if (formData.category && formData.quantity && formData.type) {
+      console.log('Form Data:', formData)
+    } else {
+      setFormError({
+        category: !formData.category,
+        quantity: !formData.quantity,
+        type: !formData.type,
+      })
+    }
+  }
   return (
     <div>
       <Modal
@@ -61,6 +84,9 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
           //   '& > div': { gridColumn: isNonMobile ? undefined : 'span 4' },
           // }}
         >
+          <Box sx={{ gridColumn: 'span 4' }}>
+            <Header title="ADD PRODUCT" subtitle={`USER ID : ${id}`} />
+          </Box>
           <Autocomplete
             options={['Milk', 'Ghee', 'Butter', 'Paneer']}
             getOptionLabel={(option) => option}
@@ -73,7 +99,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
                 variant="filled"
                 type="text"
                 label="Category"
-                //error={formError.animalType}
+                error={formError.category}
                 name="Category"
               />
             )}
@@ -84,6 +110,27 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
               options={secondAutocompleteOptions}
               getOptionLabel={(option) => option}
               fullWidth
+              value={formData.type}
+              onChange={handleFieldChange('type')}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="filled"
+                  type="text"
+                  label="Type"
+                  error={formError.type}
+                  name="type"
+                />
+              )}
+              sx={{ gridColumn: 'span 2' }}
+            />
+          )}
+
+          {formData.type && formData.category === 'Milk' && (
+            <Autocomplete
+              options={thirdAutocompleteOptions}
+              getOptionLabel={(option) => option}
+              fullWidth
               value={formData.breed}
               onChange={handleFieldChange('breed')}
               renderInput={(params) => (
@@ -92,7 +139,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
                   variant="filled"
                   type="text"
                   label="Breed"
-                  error={formError.breed}
+                  //error={formError.breed}
                   name="breed"
                 />
               )}
@@ -104,13 +151,27 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             fullWidth
             variant="filled"
             type="number"
-            label="Cattle weight/kg"
-            value={formData.cattleWeight}
-            //onChange={handleFieldChange('cattleWeight')}
+            label={`quantity/${formData.category === 'Milk' ? 'liter' : 'kg'}`}
+            value={formData.quantity}
+            onChange={handleFieldChange('quantity')}
             name="cattleWeight"
-            error={formError.cattleWeight}
+            error={formError.quantity}
             sx={{ gridColumn: 'span 2' }}
           />
+          <Box
+            display="flex"
+            justifyContent="end"
+            mt="20px"
+            sx={{ gridColumn: 'span 4' }}
+          >
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={handleFormSubmit}
+            >
+              Add product
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </div>
@@ -119,7 +180,13 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
 
 const initialValues = {
   category: '',
+  type: '',
+  breed: '',
+  quantity: '',
 }
 const initialErrValues = {
   category: false,
+  type: false,
+  breed: false,
+  quantity: false,
 }
