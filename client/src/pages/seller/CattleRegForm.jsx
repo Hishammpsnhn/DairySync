@@ -6,6 +6,8 @@ import { tokens } from '../../theme'
 import Header from '../../components/Header'
 import { secondDataCompletion } from '../../utils/secondAutoCompletion'
 import { animalTypeOptions } from '../../utils/Data'
+import { registerAnimal } from '../../actions/animalActions'
+import { useSelector } from 'react-redux'
 
 const CattleRegForm = () => {
   const isNonMobile = useMediaQuery('(min-width:600px)')
@@ -14,7 +16,7 @@ const CattleRegForm = () => {
   const [formData, setFormData] = useState(initialValues)
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
-
+  const user = useSelector((state) => state.user.user)
 
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
@@ -48,7 +50,7 @@ const CattleRegForm = () => {
       formData.animalType &&
       formData.healthCondition
     ) {
-      console.log('Form Data:', formData)
+      registerAnimal(formData,user._id)
     } else {
       setFormError({
         breed: !formData.breed,

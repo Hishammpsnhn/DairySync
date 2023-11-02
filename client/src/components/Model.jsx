@@ -85,7 +85,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
           // }}
         >
           <Box sx={{ gridColumn: 'span 4' }}>
-            <Header title="ADD PRODUCT" subtitle={`USER ID : ${id}`} />
+            <Header title="ADD PRODUCT" subtitle={`ID : ${id}`} />
           </Box>
           <Autocomplete
             options={['Milk', 'Ghee', 'Butter', 'Paneer']}
