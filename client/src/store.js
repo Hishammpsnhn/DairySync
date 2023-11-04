@@ -1,12 +1,14 @@
 const { configureStore } = require('@reduxjs/toolkit');
 const { default: userReducer } = require('./reducers/userReducer');
 const { default: teamListReducer } = require('./reducers/teamListReducer');
+const { default: animalListReducer } = require('./reducers/animalListReducer');
 
 
 const store = configureStore({
   reducer: {
     user: userReducer,
-    teamList:teamListReducer
+    teamList:teamListReducer,
+    animalList:animalListReducer
   },
 });
 

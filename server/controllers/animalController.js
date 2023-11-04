@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Animal from "../models/animalModel.js";
 
 // @desc    Get all animals
-// @route   GET /api/animal
+// @route   GET /api/animal/:id
 // @access  Private/seller
 export const getAnimals = asyncHandler(async (req, res) => {
     const ownerId = req.params.id;
@@ -17,7 +17,7 @@ export const getAnimals = asyncHandler(async (req, res) => {
 })
 
 // @desc    Register a new animal
-// @route   POST /api/animal
+// @route   POST /api/animal/:id
 // @access  Private/seller
 export const registerAnimal = asyncHandler(async (req, res) => {
     const ownerId = req.params.id;
@@ -39,8 +39,6 @@ export const registerAnimal = asyncHandler(async (req, res) => {
     const animalExist = await Animal.findOne({ animalIdentification })
 
     if (animalExist) return res.status(400).json({ message: 'animal with this id already exists' });
-
-
 
     const animal = await Animal.create({
         animalType,

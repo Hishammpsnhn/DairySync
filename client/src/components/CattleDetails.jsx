@@ -65,7 +65,7 @@ const Item = ({ title, value, icon }) => {
   )
 }
 
-const CattleDetails = () => {
+const CattleDetails = ({ item }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const iconStyle = {
@@ -97,7 +97,7 @@ const CattleDetails = () => {
             textTransform="capitalize"
             sx={{ color: colors.grey[100] }}
           >
-            A1158
+            {item.animalIdentification}
           </Typography>
           <MoreVertIcon
             sx={{
@@ -117,19 +117,23 @@ const CattleDetails = () => {
         >
           <Grid item xs={6}>
             <Item
-              title="Purchase Date"
-              value="Aug 24th, 2015"
+              title="Date of Birth"
+              value={item.dateOfBirth}
               icon={<CalendarMonthIcon />}
             />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Purchase Price" value="$25,000" icon={<LocalAtm />} />
+            <Item
+              title="Purchase Price"
+              value={item.purchasePrice}
+              icon={<LocalAtm />}
+            />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Age" value="334 Days" icon={<CakeIcon />} />
+            <Item title="Anmal Type" value={item.animalType} icon={<CakeIcon />} />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Sex" value="Female" icon={<Male />} />
+            <Item title="Breed" value={item.breed} icon={<Male />} />
           </Grid>
           <Grid item xs={6}>
             <Item
@@ -141,7 +145,7 @@ const CattleDetails = () => {
           <Grid item xs={6}>
             <Item
               title="Breeding Status"
-              value="Pregnant"
+              value={item.breedingStatus}
               icon={<AutorenewIcon />}
             />
           </Grid>
@@ -161,13 +165,13 @@ const CattleDetails = () => {
             Health status
           </Typography>
         </Box>
-        <BorderLinearProgress variant="determinate" value={80} />
+        <BorderLinearProgress variant="determinate" value={item.healthCondition} />
         <Box>
           <Stack direction="row" justifyContent="space-between">
-            <Typography>Healthy</Typography>
-            <Typography>Improving</Typography>
-            <Typography>Poor</Typography>
             <Typography>Bad</Typography>
+            <Typography>Poor</Typography>
+            <Typography>Improving</Typography>
+            <Typography>Healthy</Typography>
           </Stack>
         </Box>
       </Box>
@@ -187,8 +191,8 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
+    backgroundColor: 'rgb(200,57,32)',
     background:
-      'linear-gradient(90deg, rgba(12,218,79,1) 8%, rgba(227,228,14,1) 48%, rgba(209,43,43,1) 86%)',
-    backgroundColor: 'rgb(12,218,79)',
+      'linear-gradient(90deg, rgba(200,57,32,1) 8%, rgba(223,249,9,1) 52%, rgba(17,238,0,1) 86%)',
   },
 }))
