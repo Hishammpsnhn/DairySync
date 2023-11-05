@@ -4,6 +4,8 @@ import Header from './Header'
 import Modal from '@mui/material/Modal'
 import { Autocomplete, Button, TextField } from '@mui/material'
 import { secondDataCompletion } from '../utils/secondAutoCompletion'
+import { addProduct } from '../actions/productAction'
+import {useDispatch} from 'react-redux'
 
 const style = {
   position: 'absolute',
@@ -21,7 +23,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
   const [formData, setFormData] = useState(initialValues)
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
-  const [thirdAutocompleteOptions, setthirdAutocompleteOptions] = useState([])
+ const dispatch = useDispatch()
 
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
@@ -32,7 +34,6 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
     console.log(fieldName, event, newValue, updatedValue)
     if (
       fieldName === 'category' ||
-      fieldName === 'breed' ||
       fieldName === 'type'
     ) {
       setFormData({ ...formData, [fieldName]: newValue })
@@ -49,21 +50,20 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
           'Smoked Paneer',
         ])
       }
-      const breeds = secondDataCompletion(newValue)
-      console.log(breeds)
-      setthirdAutocompleteOptions(breeds)
     } else {
       setFormData({ ...formData, [fieldName]: updatedValue })
     }
   }
   const handleFormSubmit = () => {
-    if (formData.category && formData.quantity && formData.type) {
-      console.log('Form Data:', formData)
+    if (formData.category && formData.quantity  && formData.category=== "Milk" ? formData.animalId: formData.type) {
+      dispatch(addProduct(formData, id));
+      setFormData(initialValues)
     } else {
       setFormError({
         category: !formData.category,
         quantity: !formData.quantity,
         type: !formData.type,
+        animalId:!formData.animalId,
       })
     }
   }
@@ -105,7 +105,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             )}
             sx={{ gridColumn: 'span 2' }}
           />
-          {formData.category && (
+          {formData.category !== 'Milk' &&(
             <Autocomplete
               options={secondAutocompleteOptions}
               getOptionLabel={(option) => option}
@@ -126,25 +126,18 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             />
           )}
 
-          {formData.type && formData.category === 'Milk' && (
-            <Autocomplete
-              options={thirdAutocompleteOptions}
-              getOptionLabel={(option) => option}
-              fullWidth
-              value={formData.breed}
-              onChange={handleFieldChange('breed')}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="filled"
-                  type="text"
-                  label="Breed"
-                  //error={formError.breed}
-                  name="breed"
-                />
-              )}
-              sx={{ gridColumn: 'span 2' }}
-            />
+          { formData.category === 'Milk' && (
+            <TextField
+            fullWidth
+            variant="filled"
+            type="text"
+            label="Animal Identification ID"
+            value={formData.animalId}
+            onChange={handleFieldChange('animalId')}
+            name="cattleWeight"
+            error={formError.animalId}
+            sx={{ gridColumn: 'span 2' }}
+          />
           )}
 
           <TextField
@@ -181,12 +174,12 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
 const initialValues = {
   category: '',
   type: '',
-  breed: '',
   quantity: '',
+  animalId: '',
 }
 const initialErrValues = {
   category: false,
   type: false,
-  breed: false,
   quantity: false,
+  animalId:false
 }
