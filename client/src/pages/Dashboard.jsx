@@ -20,8 +20,8 @@ import { useEffect } from 'react'
 
 const Dashboard = () => {
   const theme = useTheme()
-  const colors = tokens(theme.palette.mode);
-  
+  const colors = tokens(theme.palette.mode)
+
   return (
     <Box m="20px">
       {/* HEADER */}
@@ -62,8 +62,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
+            title="35.7 L"
+            subtitle="Today Milk Collected"
             progress="0.75"
             increase="+14%"
             icon={
@@ -81,12 +81,32 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title="431,225 L"
+            subtitle="Today's Milk Sales"
             progress="0.50"
             increase="+21%"
             icon={
               <PointOfSaleIcon
+                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
+              />
+            }
+          />
+        </Box>
+
+        <Box
+          gridColumn="span 3"
+          backgroundColor={colors.primary[400]}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <StatBox
+            title="12,000 L"
+            subtitle="This Month's Distribution"
+            progress="0.80"
+            increase="+43%"
+            icon={
+              <TrafficIcon
                 sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
               />
             }
@@ -111,26 +131,6 @@ const Dashboard = () => {
             }
           />
         </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="1,325,134"
-            subtitle="Traffic Received"
-            progress="0.80"
-            increase="+43%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
-
         {/* ROW 2 */}
         <Box
           gridColumn="span 8"

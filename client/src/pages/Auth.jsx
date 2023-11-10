@@ -23,7 +23,7 @@ export default function Auth() {
   const navigate = useNavigate()
   const location = useLocation();
 
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+  const {isAuthenticated,user} = useSelector((state) => state.user)
 
   const [isLogin, setIsLogin] = React.useState(false)
 
@@ -36,11 +36,14 @@ export default function Auth() {
   }
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user.role !== 'user') {
       navigate('/dashboard');
       return;
+    }else if (isAuthenticated && user.role === 'user') {
+      navigate('/home');
+      return;
     }
-  }, [isAuthenticated, navigate, ]);
+  }, [isAuthenticated, navigate, user]);
 
   return (
     <Container component="main" maxWidth="xs">

@@ -38,6 +38,10 @@ const animalSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    milkProductions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MilkProduction',
+    }],
     dateAdministered: Date,
     milkFrequency: Number,
     milkYeild: Number,

@@ -8,15 +8,16 @@ import {
   LinearProgress,
   linearProgressClasses,
   Stack,
+  Button,
+  IconButton,
+  MenuItem,
+  Menu,
 } from '@mui/material'
 import { tokens } from '../theme'
-import PetsIcon from '@mui/icons-material/Pets'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import styled from '@emotion/styled'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import LocalAtmIcon from '@mui/icons-material/LocalAtm'
 import CakeIcon from '@mui/icons-material/Cake'
-import MaleIcon from '@mui/icons-material/Male'
 import EMobiledataIcon from '@mui/icons-material/EMobiledata'
 import AutorenewIcon from '@mui/icons-material/Autorenew'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
@@ -24,6 +25,7 @@ import LocalAtm from '@mui/icons-material/LocalAtm'
 import Male from '@mui/icons-material/Male'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCow } from '@fortawesome/free-solid-svg-icons'
+import MilkYeildModel from './MilkYeildModel'
 
 const Item = ({ title, value, icon }) => {
   const theme = useTheme()
@@ -68,6 +70,24 @@ const Item = ({ title, value, icon }) => {
 const CattleDetails = ({ item }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [modelOpen, setModelOpen] = React.useState(false)
+
+  const handleModelOpen = () => {
+    setModelOpen(true)
+    handleClose()
+  }
+  const handleModleClose = () => setModelOpen(false)
+
+  const open = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   const iconStyle = {
     color: colors.greenAccent[600],
     fontSize: '22px',
@@ -99,13 +119,47 @@ const CattleDetails = ({ item }) => {
           >
             {item.animalIdentification}
           </Typography>
-          <MoreVertIcon
-            sx={{
-              color: colors.greenAccent[600],
-              fontSize: '22px',
-              marginLeft: '10px',
+          <IconButton
+            id="demo-positioned-button"
+            aria-controls={open ? 'demo-positioned-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+            sx={{ marginLeft: '10px' }}
+          >
+            <MoreVertIcon
+              sx={{
+                color: colors.greenAccent[600],
+                fontSize: '22px',
+              }}
+            />
+          </IconButton>
+          <MilkYeildModel
+            open={modelOpen}
+            setOpen={setModelOpen}
+            handleClose={handleModleClose}
+            animalIdentificationCode={item.animalIdentification}
+            id={item._id}
+          />
+          <Menu
+            id="demo-positioned-menu"
+            aria-labelledby="demo-positioned-button"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
             }}
-          />{' '}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <MenuItem onClick={handleModelOpen}>Today's Milk Yield</MenuItem>
+            <MenuItem onClick={handleClose}>Edit</MenuItem>
+            <MenuItem onClick={handleClose}>Delete</MenuItem>
+          </Menu>{' '}
         </Box>
       </Box>
       <Divider color={colors.greenAccent[600]} />
@@ -130,7 +184,11 @@ const CattleDetails = ({ item }) => {
             />
           </Grid>
           <Grid item xs={6}>
-            <Item title="Anmal Type" value={item.animalType} icon={<CakeIcon />} />
+            <Item
+              title="Anmal Type"
+              value={item.animalType}
+              icon={<CakeIcon />}
+            />
           </Grid>
           <Grid item xs={6}>
             <Item title="Breed" value={item.breed} icon={<Male />} />
@@ -165,7 +223,10 @@ const CattleDetails = ({ item }) => {
             Health status
           </Typography>
         </Box>
-        <BorderLinearProgress variant="determinate" value={item.healthCondition} />
+        <BorderLinearProgress
+          variant="determinate"
+          value={item.healthCondition}
+        />
         <Box>
           <Stack direction="row" justifyContent="space-between">
             <Typography>Bad</Typography>
