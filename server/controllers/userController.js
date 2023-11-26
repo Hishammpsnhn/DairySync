@@ -88,9 +88,6 @@ export const getUsers = asyncHandler(async (req, res) => {
     const sortedUsers = await User.find({})
       .sort({ role: 1 }) // Sort in ascending order based on "role"
       .exec();
-
-    // Sort the results based on the custom order
-    console.log(sortedUsers)
     sortedUsers.sort((a, b) => customOrder[a.role] - customOrder[b.role]);
 
     res.status(200).json(sortedUsers)

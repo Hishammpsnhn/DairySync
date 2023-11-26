@@ -24,6 +24,12 @@ const productSchema = new mongoose.Schema({
             return this.category !== "Milk";
         }
     },
+    quality: {
+        type: Number,
+        required: function () {
+            return this.category === "Milk";
+        }
+    },
     quantity: {
         type: Number,
         required: true

@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { addProductFailure, addProductStart, addProductSuccess } from '../reducers/addProductReducer';
 
-export const addProduct = (formData, id) => {
+export const addProduct = (formData, id) => async (dispatch) => {
+    dispatch(addProductStart)
     return async (dispatch, getState) => {
         try {
             const { user: { user } } = getState();
@@ -11,15 +13,20 @@ export const addProduct = (formData, id) => {
                     Authorization: `Bearer ${user?.token}`,
                 },
             };
-
             const { data } = await axios.post(`/api/product/${id}`, { formData }, config);
-            console.log(data);
-
-            // Dispatch a success action, e.g., dispatch(addProductSuccess(data));
+           // dispatch(addProductSuccess(data))
         } catch (error) {
             console.error('Error:', error);
+            if (error.response && error.response.data) {
+                const errorMessage = error.response.data.message;
+                console.error('Server Error Message:', errorMessage);
+                dispatch(addProductFailure(errorMessage));
+            } else {
+                console.error('Generic Error');
+                dispatch(addProductFailure("something went wrong"));
 
-            // Dispatch an error action, e.g., dispatch(addProductError(error));
+            }
         }
-    };
+    }
 };
+

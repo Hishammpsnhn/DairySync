@@ -5,7 +5,7 @@ import Modal from '@mui/material/Modal'
 import { Autocomplete, Button, TextField } from '@mui/material'
 import { secondDataCompletion } from '../utils/secondAutoCompletion'
 import { addProduct } from '../actions/productAction'
-import {useDispatch} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const style = {
   position: 'absolute',
@@ -20,10 +20,12 @@ const style = {
 }
 
 export default function BasicModal({ open, setOpen, id, handleClose }) {
+  const {products,loading,error} = useSelector((state) => state.addProduct)
+ 
   const [formData, setFormData] = useState(initialValues)
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
- const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
@@ -32,10 +34,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
         : newValue
       : newValue
     console.log(fieldName, event, newValue, updatedValue)
-    if (
-      fieldName === 'category' ||
-      fieldName === 'type'
-    ) {
+    if (fieldName === 'category' || fieldName === 'type') {
       setFormData({ ...formData, [fieldName]: newValue })
       if (newValue === 'Milk') {
         setSecondAutocompleteOptions(['Cattle', 'Buffaloes', 'Goat'])
@@ -55,15 +54,20 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
     }
   }
   const handleFormSubmit = () => {
-    if (formData.category && formData.quantity  && formData.category=== "Milk" ? formData.animalId: formData.type) {
-      dispatch(addProduct(formData, id));
+    if (
+      formData.category && formData.quantity && formData.category === 'Milk' && formData.quantity
+        ? formData.animalId
+        : formData.type
+    ) {
+      dispatch(addProduct(formData, id))
       setFormData(initialValues)
     } else {
       setFormError({
         category: !formData.category,
         quantity: !formData.quantity,
         type: !formData.type,
-        animalId:!formData.animalId,
+        animalId: !formData.animalId,
+        quality:!formData.quality,
       })
     }
   }
@@ -105,7 +109,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             )}
             sx={{ gridColumn: 'span 2' }}
           />
-          {formData.category !== 'Milk' &&(
+          {formData.category !== 'Milk' && (
             <Autocomplete
               options={secondAutocompleteOptions}
               getOptionLabel={(option) => option}
@@ -126,20 +130,32 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             />
           )}
 
-          { formData.category === 'Milk' && (
+          {formData.category === 'Milk' && (
             <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="Animal Identification ID"
-            value={formData.animalId}
-            onChange={handleFieldChange('animalId')}
-            name="cattleWeight"
-            error={formError.animalId}
-            sx={{ gridColumn: 'span 2' }}
-          />
+              fullWidth
+              variant="filled"
+              type="text"
+              label="Animal Identification ID"
+              value={formData.animalId}
+              onChange={handleFieldChange('animalId')}
+              name="cattleWeight"
+              error={formError.animalId}
+              sx={{ gridColumn: 'span 2' }}
+            />
           )}
-
+          {formData.category === 'Milk' && (
+            <TextField
+              fullWidth
+              variant="filled"
+              type="number"
+              label="Density Of Milk"
+              value={formData.quality}
+              onChange={handleFieldChange('quality')}
+              name="cattleWeight"
+              error={formError.quality}
+              sx={{ gridColumn: 'span 2' }}
+            />
+          )}
           <TextField
             fullWidth
             variant="filled"
@@ -161,6 +177,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
               color="secondary"
               variant="contained"
               onClick={handleFormSubmit}
+            
             >
               Add product
             </Button>
@@ -176,10 +193,12 @@ const initialValues = {
   type: '',
   quantity: '',
   animalId: '',
+  quality: '',
 }
 const initialErrValues = {
   category: false,
   type: false,
   quantity: false,
-  animalId:false
+  animalId: false,
+  quality:false,
 }

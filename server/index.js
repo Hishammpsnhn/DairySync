@@ -5,7 +5,8 @@ import cors from 'cors';
 
 import userRoutes from './Routes/userRoutes.js'
 import animalRoutes from './Routes/animalRoutes.js'
-import productRoute from './Routes/productRoutes.js'
+import productRoutes from './Routes/productRoutes.js'
+import dashboardRoutes from './Routes/dashboardRoute.js'
 
 dotenv.config();
 
@@ -18,7 +19,8 @@ connectDB();
 
 app.use('/api/users', userRoutes)
 app.use('/api/animal',animalRoutes)
-app.use('/api/product',productRoute)
+app.use('/api/product',productRoutes)
+app.use('/api/dashboard',dashboardRoutes)
 
 const port = process.env.PORT
 

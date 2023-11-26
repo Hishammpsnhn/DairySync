@@ -10,17 +10,19 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
     console.log(sellerId);
     console.log(req.body)
     try {
-        const { category, type, quantity, animalId } = req.body.formData;
+        const { category, type, quantity, animalId, quality } = req.body.formData;
         console.log(category, type, quantity, animalId)
 
         //animal id is required
         if (animalId) {
             const animalnewId = await Animal.findOne({ animalIdentification: animalId })
+            if (!animalnewId) return res.status(400).json({ message: 'animal with this id not exists' });
             console.log(animalnewId);
             const product = await Product.create({
                 sellerId,
                 category,
                 quantity,
+                quality,
                 animalId: animalnewId
             })
             if (product)

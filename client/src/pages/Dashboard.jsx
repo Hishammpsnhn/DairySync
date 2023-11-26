@@ -14,13 +14,19 @@ import StatBox from '../components/StatBox'
 import ProgressCircle from '../components/ProgressCirlcle'
 import LineChart from '../components/LineChart'
 import BarChart from '../components/BarChart'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { adminDashboard } from '../actions/dashboardAction'
 
 const Dashboard = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const dispatch = useDispatch()
+  
+  useEffect(()=>{
+    dispatch(adminDashboard)
+  },[dispatch])
 
   return (
     <Box m="20px">
