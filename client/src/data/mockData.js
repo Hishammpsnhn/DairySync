@@ -1,5 +1,12 @@
 import { tokens } from "../theme";
 
+export const milkPrice = [
+  {
+    id:"1",
+    category:"a"
+  }
+]
+
 export const mockDataTeam = [
   {
     id: 1,

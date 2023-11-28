@@ -20,13 +20,17 @@ import { useEffect } from 'react'
 import { adminDashboard } from '../actions/dashboardAction'
 
 const Dashboard = () => {
+  const user = useSelector((state) => state.user.user)
+  const {dashboardStatBox,loading,error} = useSelector((state) => state.dashboard);
+
+
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     dispatch(adminDashboard)
-  },[dispatch])
+  }, [dispatch])
 
   return (
     <Box m="20px">
@@ -60,35 +64,38 @@ const Dashboard = () => {
         rowGap="40px"
       >
         {/* ROW 1 */}
+        {user?.role === 'admin' && (
+          <Box
+            gridColumn="span 3"
+            backgroundColor={colors.primary[400]}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <StatBox
+              title={`${dashboardStatBox.stat1} %`}
+              subtitle="Milk Stock Level"
+              progress={`${dashboardStatBox.stat1/100}`}
+              increase="+14%"
+              icon={
+                <EmailIcon
+                  sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
+                />
+              }
+            />
+          </Box>
+        )}
+
         <Box
-          gridColumn="span 3"
+          gridColumn={user?.role === 'admin' ? 'span 3' : 'span 4'}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
           <StatBox
-            title="35.7 L"
-            subtitle="Inventory Levels"
-            progress="0.75"
-            increase="+14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="431,225 L"
-            subtitle="Today's Milk Collection"
+            title={`${dashboardStatBox.stat2} L`}
+            subtitle= {user?.role === 'admin' ? "Today's Milk Collection": "This Month Milk sale"}
             progress="0.50"
             increase="+21%"
             icon={
@@ -99,15 +106,15 @@ const Dashboard = () => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn={user?.role === 'admin' ? 'span 3' : 'span 4'}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
           <StatBox
-            title="431,225 L"
-            subtitle="Today's Milk Sales"
+            title={`${dashboardStatBox.stat3} ${user?.role === 'admin' && "L"}`}
+            subtitle= {user?.role === 'admin' ? "Today's Milk Sale": "Milk Products Saled" }
             progress="0.50"
             increase="+21%"
             icon={
@@ -118,18 +125,17 @@ const Dashboard = () => {
           />
         </Box>
 
-  
         <Box
-          gridColumn="span 3"
+          gridColumn={user?.role === 'admin' ? 'span 3' : 'span 4'}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
-            subtitle="New Clients"
-            progress="0.30"
+            title={`${dashboardStatBox.stat4} `}
+            subtitle= {user?.role === 'admin' ? "New Client's": "Total Breed"}
+            progress="0"
             increase="+5%"
             icon={
               <PersonAddIcon

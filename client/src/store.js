@@ -3,6 +3,7 @@ const { default: userReducer } = require('./reducers/userReducer');
 const { default: teamListReducer } = require('./reducers/teamListReducer');
 const { default: animalListReducer } = require('./reducers/animalListReducer');
 const { default: addProductReducer } = require('./reducers/addProductReducer');
+const { default: dashboardReducer } = require('./reducers/dashboardReducer');
 const thunk = require('redux-thunk').default; // Import redux-thunk
 
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
     teamList: teamListReducer,
     animalList: animalListReducer,
     addProduct:addProductReducer,
+    dashboard:dashboardReducer
   },
   middleware: [...getDefaultMiddleware(), thunk], // Apply redux-thunk middleware
 });

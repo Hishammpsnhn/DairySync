@@ -177,6 +177,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
               color="secondary"
               variant="contained"
               onClick={handleFormSubmit}
+              
             
             >
               Add product
