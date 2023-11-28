@@ -6,6 +6,7 @@ import expressAsyncHandler from "express-async-handler";
 // @route   POST /api/product/:id
 // @access  Private/admin
 export const addProduct = expressAsyncHandler(async (req, res) => {
+    console.log("addProduct")
     const sellerId = req.params.id;
     console.log(sellerId);
     console.log(req.body)

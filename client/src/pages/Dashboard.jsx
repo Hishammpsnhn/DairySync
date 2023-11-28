@@ -69,11 +69,30 @@ const Dashboard = () => {
         >
           <StatBox
             title="35.7 L"
-            subtitle="Today Milk Collected"
+            subtitle="Inventory Levels"
             progress="0.75"
             increase="+14%"
             icon={
               <EmailIcon
+                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
+              />
+            }
+          />
+        </Box>
+        <Box
+          gridColumn="span 3"
+          backgroundColor={colors.primary[400]}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <StatBox
+            title="431,225 L"
+            subtitle="Today's Milk Collection"
+            progress="0.50"
+            increase="+21%"
+            icon={
+              <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
               />
             }
@@ -99,25 +118,7 @@ const Dashboard = () => {
           />
         </Box>
 
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="12,000 L"
-            subtitle="This Month's Distribution"
-            progress="0.80"
-            increase="+43%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
+  
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}

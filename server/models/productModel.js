@@ -1,40 +1,45 @@
 import mongoose from "mongoose";
 
-const productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema(
+  {
     sellerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
     category: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
     animalId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Animal',
-        required: function () {
-            return this.category === "Milk";
-        }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Animal',
+      required: function () {
+        return this.category === "Milk";
+      }
     },
     type: {
-        type: String,
-        required: function () {
-            // "type" is not required when "category" is "milk"
-            return this.category !== "Milk";
-        }
+      type: String,
+      required: function () {
+        // "type" is not required when "category" is "milk"
+        return this.category !== "Milk";
+      }
     },
     quality: {
-        type: Number,
-        required: function () {
-            return this.category === "Milk";
-        }
+      type: Number,
+      required: function () {
+        return this.category === "Milk";
+      }
     },
     quantity: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true
     }
-});
+  },
+  {
+    timestamps: true // Adds createdAt and updatedAt fields
+  }
+);
 
 const Product = mongoose.model('Product', productSchema);
 
