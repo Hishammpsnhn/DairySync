@@ -1,10 +1,9 @@
 import axios from "axios";
-import { fetchDashboardStart } from "../reducers/dashboardReducer";
+import { fetchDashboardFailure, fetchDashboardStart,fetchDashboardSuccess } from "../reducers/dashboardReducer";
 
 export const adminDashboard = async (dispatch, getState) => {
-    console.log("get",getState)
     try {
-      fetchDashboardStart()
+      dispatch(fetchDashboardStart)
       const { user: { user } } = getState();
       const config = {
         headers: {
@@ -15,10 +14,10 @@ export const adminDashboard = async (dispatch, getState) => {
   
        const { data } = await axios.get('/api/dashboard', config);
     //   console.log(data)
-   //   dispatch(fetchTeamListSuccess(data))
+      dispatch(fetchDashboardSuccess(data))
     } catch (error) {
       console.error('Error:', error);
-     // dispatch(fetchTeamListFailure(error));
+      dispatch(fetchDashboardFailure(error));
     }
   };
   

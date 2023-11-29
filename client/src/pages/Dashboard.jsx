@@ -23,7 +23,6 @@ const Dashboard = () => {
   const user = useSelector((state) => state.user.user)
   const {dashboardStatBox,loading,error} = useSelector((state) => state.dashboard);
 
-
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()

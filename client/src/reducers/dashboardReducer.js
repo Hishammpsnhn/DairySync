@@ -14,9 +14,15 @@ const dashboardSlice = createSlice({
       state.error = null; 
     },
     fetchDashboardSuccess: (state, action) => {
-      state.users = action.payload;
+      console.log(action.payload)
+      //{totalQuantity: 0, inventory: 0, totalClient: 4}
+      state.dashboardStatBox.stat1 = parseFloat(action.payload.inventory.toFixed(2));
+      state.dashboardStatBox.stat2 = action.payload.totalQuantity;
+      // state.dashboardStatBox.stat3 = action.payload.totalQuantity;
+      state.dashboardStatBox.stat4 = action.payload.totalClient;
       state.loading = false;
     },
+    
     fetchDashboardFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;

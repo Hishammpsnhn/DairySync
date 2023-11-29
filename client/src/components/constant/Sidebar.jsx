@@ -1,7 +1,7 @@
 import { useTheme } from '@emotion/react'
 import { tokens } from '../../theme'
 import React, { useState } from 'react'
-import { Avatar, Box, IconButton, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, Typography } from '@mui/material'
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar'
 import { Link, useNavigate } from 'react-router-dom'
 import 'react-pro-sidebar/dist/css/styles.css'
@@ -18,9 +18,10 @@ import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined'
 import ProfileImage from '../../assets/th.jpeg'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCow } from '@fortawesome/free-solid-svg-icons'
+import { logout } from '../../reducers/userReducer'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -47,6 +48,13 @@ function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [selected, setSelected] = useState('Dashboard')
   const user = useSelector((state) => state.user.user)
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    localStorage.removeItem('userInfo');
+    dispatch(logout)
+    navigate('/')
+  }
 
   if (!user) {
     navigate('/')
@@ -133,8 +141,8 @@ function Sidebar() {
 
           <Box paddingLeft={isCollapsed ? undefined : '10%'}>
             <Item
-              title="Dashboard"
-              to="/dashboard"
+              title={user.role === 'user' ? "Home":'Dashboard'}
+              to={user.role === 'user' ? "/home":'/dashboard'}
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -259,6 +267,7 @@ function Sidebar() {
             />
           </Box>
         </Menu>
+        <Button color='error' onClick={handleLogout}>LOGOUT</Button>
       </ProSidebar>
     </Box>
   )
