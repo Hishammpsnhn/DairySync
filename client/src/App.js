@@ -15,6 +15,7 @@ import RequireAuth from './components/RequireAuth';
 import CattleDetailsPage from './pages/seller/CattleDetailsPage';
 import CattleRegForm from './pages/seller/CattleRegForm';
 import Home from './pages/customer/Home';
+import ProductPage from './pages/customer/ProductPage';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -53,6 +54,7 @@ function App() {
 
               {/* Customer */}
               {user?.role === "user" && <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />}
+              {<Route path="/home/product/:productname" element={<RequireAuth><ProductPage /></RequireAuth>} />}
 
 
             </Routes>

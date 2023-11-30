@@ -45,9 +45,9 @@ function Sidebar() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const navigate = useNavigate()
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [selected, setSelected] = useState('Dashboard')
   const user = useSelector((state) => state.user.user)
+  const [isCollapsed, setIsCollapsed] = useState(user?.role !== 'user' ? false:true)
+  const [selected, setSelected] = useState('Dashboard')
   const dispatch = useDispatch();
 
   const handleLogout = () => {

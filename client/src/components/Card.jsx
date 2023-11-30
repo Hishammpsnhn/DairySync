@@ -5,25 +5,21 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import milk from '../assets/milk-bottle.png';
+import milk from '../assets/milk.png';
 
-export default function ProductCard() {
+export default function ProductCard({name,image}) {
   return (
-    <Card sx={{ maxWidth: 345, bgcolor: 'darkslategrey' }}>
+    <Card  sx={{ maxWidth: 345, bgcolor: 'transparent',cursor:'pointer' }}>
       <CardMedia
         sx={{ height: 200, backgroundSize: 'contain' }}
-        image={milk}
+        image={image}
         title="green iguana"
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Lizard
+        <Typography gutterBottom variant="h4" component="div" textTransform="capitalize">
+          {name}
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions>
     </Card>
   );
 }
