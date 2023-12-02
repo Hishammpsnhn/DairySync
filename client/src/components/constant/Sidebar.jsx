@@ -52,7 +52,7 @@ function Sidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
-    dispatch(logout)
+    dispatch(logout())
     navigate('/')
   }
 

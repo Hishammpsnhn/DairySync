@@ -1,4 +1,5 @@
 import Animal from "../models/animalModel.js";
+import Milk from "../models/milkModal.js";
 import Product from "../models/productModel.js";
 import expressAsyncHandler from "express-async-handler";
 
@@ -6,10 +7,7 @@ import expressAsyncHandler from "express-async-handler";
 // @route   POST /api/product/:id
 // @access  Private/admin
 export const addProduct = expressAsyncHandler(async (req, res) => {
-    console.log("addProduct")
     const sellerId = req.params.id;
-    console.log(sellerId);
-    console.log(req.body)
     try {
         const { category, type, quantity, animalId, quality } = req.body.formData;
         console.log(category, type, quantity, animalId)
@@ -18,7 +16,6 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
         if (animalId) {
             const animalnewId = await Animal.findOne({ animalIdentification: animalId })
             if (!animalnewId) return res.status(400).json({ message: 'animal with this id not exists' });
-            console.log(animalnewId);
             const product = await Product.create({
                 sellerId,
                 category,
@@ -26,8 +23,27 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
                 quality,
                 animalId: animalnewId
             })
-            if (product)
-                res.status(200).json(product)
+            if (category === 'Milk') {
+                let milkType = '';
+
+                if (quality <= 1) {
+                    milkType = 'skimmed';
+                } else if (quality <= 2) {
+                    milkType = 'smart';
+                } else if (quality <= 3.5) {
+                    milkType = 'toned';
+                } else {
+                    milkType = 'rich';
+                }
+                const ret = await Milk.updateOne(
+                    {},
+                    { $inc: { [milkType]: quantity } },
+                    { upsert: true }
+                );
+                console.log(ret);
+                if (product)
+                    res.status(200).json(product)
+            }
         } else {
             const product = await Product.create({
                 sellerId,
