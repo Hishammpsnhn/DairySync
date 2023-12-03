@@ -1,3 +1,4 @@
+import Orders from "../models/OrdersModel.js";
 import Animal from "../models/animalModel.js";
 import Milk from "../models/milkModal.js";
 import Product from "../models/productModel.js";
@@ -63,10 +64,9 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
 })
 
 // @desc   find product sellers
-// @route   POST /api/product/sellers
+// @route   get /api/product/sellers
 // @access  Private
 export const ProductSellers = expressAsyncHandler(async (req, res) => {
-    console.log("Product sellers called")
     const type = req.query.type;
     try {
         const productsWithSameType = await Product.find({ type }).populate('sellerId');
@@ -97,7 +97,29 @@ export const ProductSellers = expressAsyncHandler(async (req, res) => {
     } catch (error) {
         res.json({ message: error.message })
     }
+});
 
+// @desc   purchase the product
+// @route   POST /api/product/purchase
+// @access  Private
+export const purchase = expressAsyncHandler(async (req, res) => {
+    const {Type,quantity,paymentMethod,address,bookingDate,sellerId} = req.body.formData;
+    const userId = req.user._id; // Adjust based on your authentication setup
 
+    // Create a new Milk order
+    const newOrder = new Orders({
+      address,
+      userId,
+      sellerId,
+      productType: Type, // Assuming Type is the productId, update as needed
+      quantity,
+      delivered: false, // Assuming initially the order is not delivered
+    });
+
+    // Save the new order to the database
+    await newOrder.save();
+
+    // You can send a success response if needed
+    res.status(201).json({ message: 'Order placed successfully', order: newOrder });
 
 });

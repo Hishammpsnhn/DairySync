@@ -34,7 +34,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { findProductSellers } from '../../actions/productAction'
+import { findProductSellers, productPurchase } from '../../actions/productAction'
 import { useDispatch } from 'react-redux'
 
 export default function ProductPage() {
@@ -42,6 +42,8 @@ export default function ProductPage() {
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
   const { productname } = useParams()
+  const [sellers, setSellers] = useState([])
+  const [loading,setLoading] = useState(false)
 
   const selectedGroceryItem = groceryItems.find(
     (item) => item.category.toLowerCase() === productname.toLowerCase()
@@ -71,17 +73,29 @@ export default function ProductPage() {
     }))
   }
 
- 
   const handlePrint = () => {
-    console.log('Milk Type:', formData)
+    console.log("handlepurchase")
+    dispatch(productPurchase(formData))
   }
 
   useEffect(() => {
-    if (selectedGroceryItem.category !== 'Milk' && formData.Type) {
-      dispatch(findProductSellers(formData.Type))
-    } 
-  }, [selectedGroceryItem.category, formData.Type,dispatch])
-  
+    const fetchData = async () => {
+      if (selectedGroceryItem.category !== 'Milk' && formData.Type) {
+        try {
+          setLoading(true)
+          const sellers = await dispatch(findProductSellers(formData.Type))
+          setSellers(sellers)
+          setLoading(false)
+        } catch (error) {
+          // Handle errors if needed
+          console.error('Error fetching data:', error)
+        }
+      }
+    }
+
+    fetchData()
+  }, [selectedGroceryItem.category, formData.Type, dispatch])
+
   return (
     <Stack
       direction="row"
@@ -156,11 +170,11 @@ export default function ProductPage() {
                 label="seller Name"
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
               >
-                {/* {selectedGroceryItem.types.map(({ type }, index) => (
-                  <MenuItem key={index} value={type}>
-                    {type}
+                {sellers.map(({ seller, id }, index) => (
+                  <MenuItem key={id} value={id}>
+                    {seller}
                   </MenuItem>
-                ))} */}
+                ))}
               </Select>
             </FormControl>
           )}
@@ -169,26 +183,33 @@ export default function ProductPage() {
               <InputLabel id="milk-type-label">
                 Select Available Seller
               </InputLabel>
-              <Select
-                name="sellerId"
-                value={formData.sellerId}
-                label="seller Name"
-                onChange={(e) => handleChange(e.target.name, e.target.value)}
-              >
-                {/* {selectedGroceryItem.types.map(({ type }, index) => (
-                     <MenuItem key={index} value={type}>
-                       {type}
-                     </MenuItem>
-                   ))} */}
-              </Select>
+              {sellers.length > 0 ? (
+                <Select
+                  name="sellerId"
+                  value={formData.sellerId}
+                  label="seller Name"
+                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                >
+                  {sellers.map(({ seller, id }, index) => (
+                    <MenuItem key={id} value={id}>
+                      {seller}
+                    </MenuItem>
+                  ))}
+                </Select>
+              ) : (
+                <Typography variant="body2" color="red">
+                  Currently not available
+                </Typography>
+              )}
             </FormControl>
           )}
+
           <TextField
             margin="normal"
             required
-            disabled={selectedGroceryItem.category !== 'Milk'}
             name="quantity"
             id="quantity"
+            
             fullWidth
             type="number"
             label="Quantity/L/KG"
