@@ -40,23 +40,43 @@ export const groceryItems = [
     },
     {
       category: "Paneer",
-      types:[],
+      types:[
+        {
+          type: "Regular Paneer",
+          description: "Paneer describes"
+        },
+        {
+          type: "Smoked Paneer",
+          description: "Paneer describes"
+        }
+      
+       
+      ],
       description: "Paneer is a versatile dairy product used in various cuisines, loved for its soft texture and ability to absorb flavors in cooking."
     },
     {
       category: "Ghee",
-      types:[],
+      types:[
+        {
+          type:"Cow Ghee",
+          description:"somthig lorem lpusm"
+        },
+        {
+          type:"Buffalo Ghee",
+          description:"somthig lorem lpusm"
+        }
+      ],
       description: "Ghee is a clarified butter that adds rich flavor to dishes and is commonly used in Indian cuisine for cooking and frying."
     },
     {
       category: "Butter",
       types: [
         {
-          type: "Salted",
+          type: "Salted Butter",
           description: "Salted butter is a classic choice, perfect for spreading on bread or adding a savory touch to dishes."
         },
         {
-          type: "Unsalted",
+          type: "Unsalted Butter",
           description: "Unsalted butter provides a pure and neutral taste, making it an ideal option for baking where precise control over salt content is desired."
         }
       ]

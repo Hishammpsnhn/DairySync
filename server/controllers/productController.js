@@ -61,3 +61,43 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
     }
 
 })
+
+// @desc   find product sellers
+// @route   POST /api/product/sellers
+// @access  Private
+export const ProductSellers = expressAsyncHandler(async (req, res) => {
+    console.log("Product sellers called")
+    const type = req.query.type;
+    try {
+        const productsWithSameType = await Product.find({ type }).populate('sellerId');
+
+        // Use a Set to keep track of unique sellers
+        const uniqueSellers = new Set();
+
+        // Extract and format relevant information
+        const formattedData = productsWithSameType.reduce((acc, product) => {
+            const sellerName = product.sellerId.userName;
+            const sellerId = product.sellerId._id;
+
+            // Check if the sellerName is not already in the set
+            if (!uniqueSellers.has(sellerId)) {
+                uniqueSellers.add(sellerId);
+
+                // Add the formatted data to the accumulator
+                acc.push({
+                    id: sellerId,
+                    type: product.type,
+                    seller: sellerName,
+                });
+            }
+
+            return acc;
+        }, []);
+        res.json(formattedData);
+    } catch (error) {
+        res.json({ message: error.message })
+    }
+
+
+
+});

@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { groceryItems } from '../../utils/Data'
 import milk from '../../assets/milk.png'
@@ -30,30 +30,18 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import { useTheme } from '@emotion/react'
 import { tokens } from '../../theme'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { findProductSellers } from '../../actions/productAction'
+import { useDispatch } from 'react-redux'
 
 export default function ProductPage() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const dispatch = useDispatch()
   const { productname } = useParams()
-
-  const [formData, setFormData] = useState({
-    milkType: '',
-    quantity: '',
-    paymentMethod: 'COD',
-    address: '', // New field for address
-  })
-
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }))
-  }
-
-  const handlePrint = () => {
-    console.log('Milk Type:', formData)
-  }
 
   const selectedGroceryItem = groceryItems.find(
     (item) => item.category.toLowerCase() === productname.toLowerCase()
@@ -65,12 +53,42 @@ export default function ProductPage() {
     ghee: ghee,
     paneer: paneer,
   }
-
-  // Get the corresponding image for the product name
   const image = imageMappings[productname.toLowerCase()]
 
+  const [formData, setFormData] = useState({
+    Type: '',
+    quantity: '',
+    paymentMethod: 'COD',
+    address: '',
+    bookingDate: null, // New field for booking date
+    sellerId: '',
+  })
+
+  const handleChange = (name, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }))
+  }
+
+ 
+  const handlePrint = () => {
+    console.log('Milk Type:', formData)
+  }
+
+  useEffect(() => {
+    if (selectedGroceryItem.category !== 'Milk' && formData.Type) {
+      dispatch(findProductSellers(formData.Type))
+    } 
+  }, [selectedGroceryItem.category, formData.Type,dispatch])
+  
   return (
-    <Stack direction="row" bgcolor={colors.primary[400]} margin="10px" borderRadius="5px">
+    <Stack
+      direction="row"
+      bgcolor={colors.primary[400]}
+      margin="10px"
+      borderRadius="5px"
+    >
       {/* column 1 */}
       <Box sx={{ width: '50%' }}>
         <CardContent>
@@ -93,39 +111,88 @@ export default function ProductPage() {
         ))}
       </Box>
       {/* column 2 */}
+
       <Box sx={{ width: '50%' }} padding="20px">
+        {selectedGroceryItem.category === 'Milk' ? (
+          <Typography variant="h3" sx={{ marginBottom: '10px' }}>
+            Booking Only
+          </Typography>
+        ) : (
+          <Typography variant="h3" sx={{ marginBottom: '10px' }}>
+            Purchase Details
+          </Typography>
+        )}
         <FormControl fullWidth>
-          {selectedGroceryItem.types.length > 0 && (
+          {selectedGroceryItem.types.length > 0 ? (
             <>
+              <FormControl>
+                <InputLabel id="milk-type-label">
+                  {selectedGroceryItem.category}
+                </InputLabel>
+                <Select
+                  labelId="milk-type-label"
+                  id="milk-type-select"
+                  name="Type"
+                  value={formData.Type}
+                  label="Milk Type"
+                  onChange={(e) => handleChange(e.target.name, e.target.value)}
+                >
+                  {selectedGroceryItem.types.map(({ type }, index) => (
+                    <MenuItem key={index} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </>
+          ) : (
+            <FormControl>
               <InputLabel id="milk-type-label">
-                {selectedGroceryItem.category}
+                Select Available Seller
               </InputLabel>
               <Select
-                labelId="milk-type-label"
-                id="milk-type-select"
-                name="milkType"
-                value={formData.milkType}
-                label="Milk Type"
-                onChange={handleChange}
+                name="sellerId"
+                value={formData.sellerId}
+                label="seller Name"
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
               >
-                {selectedGroceryItem.types.map(({ type }, index) => (
+                {/* {selectedGroceryItem.types.map(({ type }, index) => (
                   <MenuItem key={index} value={type}>
                     {type}
                   </MenuItem>
-                ))}
+                ))} */}
               </Select>
-            </>
+            </FormControl>
           )}
-
+          {formData.Type && selectedGroceryItem.category !== 'Milk' && (
+            <FormControl sx={{ marginTop: '15px' }}>
+              <InputLabel id="milk-type-label">
+                Select Available Seller
+              </InputLabel>
+              <Select
+                name="sellerId"
+                value={formData.sellerId}
+                label="seller Name"
+                onChange={(e) => handleChange(e.target.name, e.target.value)}
+              >
+                {/* {selectedGroceryItem.types.map(({ type }, index) => (
+                     <MenuItem key={index} value={type}>
+                       {type}
+                     </MenuItem>
+                   ))} */}
+              </Select>
+            </FormControl>
+          )}
           <TextField
             margin="normal"
-            fullWidth
             required
+            disabled={selectedGroceryItem.category !== 'Milk'}
             name="quantity"
             id="quantity"
+            fullWidth
             type="number"
-            label="Quantity/L"
-            onChange={handleChange}
+            label="Quantity/L/KG"
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             value={formData.quantity}
           />
           <TextField
@@ -135,16 +202,28 @@ export default function ProductPage() {
             name="address"
             id="address"
             label="Address"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
             value={formData.address}
           />
+          {selectedGroceryItem.category === 'Milk' && (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker
+                  label="Booking Date"
+                  value={formData.bookingDate}
+                  onChange={(newDate) => handleChange('bookingDate', newDate)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          )}
           <Typography variant="h6" marginTop="20px">
             Payment Method
           </Typography>
           <RadioGroup
             name="paymentMethod"
             value={formData.paymentMethod}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.name, e.target.value)}
           >
             <FormControlLabel value="COD" control={<Radio />} label="COD" />
             <FormControlLabel

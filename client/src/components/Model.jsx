@@ -45,7 +45,6 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
       } else if (newValue === 'Paneer') {
         setSecondAutocompleteOptions([
           'Regular Paneer',
-          'Malai Paneer',
           'Smoked Paneer',
         ])
       }
