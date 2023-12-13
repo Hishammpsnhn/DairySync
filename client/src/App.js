@@ -16,6 +16,7 @@ import CattleDetailsPage from './pages/seller/CattleDetailsPage';
 import CattleRegForm from './pages/seller/CattleRegForm';
 import Home from './pages/customer/Home';
 import ProductPage from './pages/customer/ProductPage';
+import OrderPage from './pages/OrderPage';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -55,6 +56,8 @@ function App() {
               {/* Customer */}
               {user?.role === "user" && <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />}
               {<Route path="/home/product/:productname" element={<RequireAuth><ProductPage /></RequireAuth>} />}
+              {<Route path="/orders" element={<RequireAuth><OrderPage /></RequireAuth>} />}
+
 
 
             </Routes>

@@ -99,3 +99,61 @@ export const productPurchase = (formData) => async (dispatch, getState) => {
         }
     }
 };
+export const myOrders =  async (dispatch, getState) => {
+    try {
+        // dispatch(addProductStart()); // Corrected dispatch invocation
+        const { user: { user } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user?.token}`,
+            },
+        };
+
+        const { data } = await axios.get('/api/product/myorders', config);
+        console.log(data);
+        return data;
+        // dispatch(addProductSuccess(data));
+    } catch (error) {
+        console.error('Error:', error);
+
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.message;
+            console.error('Server Error Message:', errorMessage);
+            // dispatch(addProductFailure(errorMessage));
+        } else {
+            console.error('Generic Error');
+            // dispatch(addProductFailure("Something went wrong"));
+        }
+    }
+};
+export const OrderUpdate =(id)=>  async (dispatch, getState) => {
+    try {
+        // dispatch(addProductStart()); // Corrected dispatch invocation
+        const { user: { user } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user?.token}`,
+            },
+        };
+console.log(config);
+        const { data } = await axios.get(`/api/product/myorders/${id}`,config);
+        console.log(data);
+        return data;
+        // dispatch(addProductSuccess(data));
+    } catch (error) {
+        console.error('Error:', error);
+
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.message;
+            console.error('Server Error Message:', errorMessage);
+            // dispatch(addProductFailure(errorMessage));
+        } else {
+            console.error('Generic Error');
+            // dispatch(addProductFailure("Something went wrong"));
+        }
+    }
+};

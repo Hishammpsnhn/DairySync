@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler'
 import User from '../models/userModel.js'
 
 export const protect = asyncHandler(async (req, res, next) => {
+  console.log("protect")
   console.log( req.headers.authorization)
   let token
   if (
@@ -40,6 +41,7 @@ export const admin = asyncHandler(async (req, res, next) => {
 });
 
 export const seller = asyncHandler(async (req, res, next) => {
+  console.log("seller")
   if (req.user && req.user.role === 'seller') {
     next();
   } else {

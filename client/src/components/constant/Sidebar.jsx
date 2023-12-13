@@ -10,6 +10,7 @@ import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined'
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined'
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined'
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined'
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
@@ -209,6 +210,15 @@ function Sidebar() {
                 title="Cattle Add Form"
                 to="/cattle-reg-form"
                 icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+            {user?.role !== 'admin' && (
+              <Item
+                title="My Orders"
+                to="/orders"
+                icon={<AddShoppingCartIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
