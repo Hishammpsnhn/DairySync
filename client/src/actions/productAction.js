@@ -69,7 +69,6 @@ export const findProductSellers = (type) => async (dispatch, getState) => {
 
 
 export const productPurchase = (formData) => async (dispatch, getState) => {
-    console.log(formData, "fomr kajf")
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
@@ -99,7 +98,7 @@ export const productPurchase = (formData) => async (dispatch, getState) => {
         }
     }
 };
-export const myOrders =  async (dispatch, getState) => {
+export const myOrders = async (dispatch, getState) => {
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
@@ -128,7 +127,7 @@ export const myOrders =  async (dispatch, getState) => {
         }
     }
 };
-export const OrderUpdate =(id)=>  async (dispatch, getState) => {
+export const OrderUpdate = (id) => async (dispatch, getState) => {
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
@@ -139,8 +138,8 @@ export const OrderUpdate =(id)=>  async (dispatch, getState) => {
                 Authorization: `Bearer ${user?.token}`,
             },
         };
-console.log(config);
-        const { data } = await axios.get(`/api/product/myorders/${id}`,config);
+        console.log(config);
+        const { data } = await axios.get(`/api/product/myorders/${id}`, config);
         console.log(data);
         return data;
         // dispatch(addProductSuccess(data));

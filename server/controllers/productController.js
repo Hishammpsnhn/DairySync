@@ -38,7 +38,11 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
                 }
                 const ret = await Milk.updateOne(
                     {},
-                    { $inc: { [milkType]: quantity } },
+                    {
+                        $inc: {
+                            [`${milkType}.quantity`]: quantity,
+                        },
+                    },
                     { upsert: true }
                 );
                 console.log(ret);
@@ -103,23 +107,34 @@ export const ProductSellers = expressAsyncHandler(async (req, res) => {
 // @route   POST /api/product/purchase
 // @access  Private
 export const purchase = expressAsyncHandler(async (req, res) => {
-    const { Type, quantity, paymentMethod, address, bookingDate, sellerId } = req.body.formData;
+    console.log(req.body)
+    const { Type, quantity, paymentMethod, address, bookingDate, sellerId, category } = req.body.formData;
     const userId = req.user._id; // Adjust based on your authentication setup
 
-    // Create a new Milk order
+    if( category === 'skimmed' || category === 'rich' || category ==='toned' || category ==='smart'){
+        await Milk.updateOne(
+            {},
+            {
+                $inc: {
+                    [`${category}.quantity`]: -quantity,
+                },
+            },
+            { upsert: true }
+        );
+    }
+
     const newOrder = new Orders({
         address,
         userId,
         sellerId,
-        productType: Type, // Assuming Type is the productId, update as needed
+        bookingDate:bookingDate,
+        productType: Type ? Type : category,
         quantity,
-        delivered: false, // Assuming initially the order is not delivered
+        delivered: false,
     });
 
-    // Save the new order to the database
     await newOrder.save();
 
-    // You can send a success response if needed
     res.status(201).json({ message: 'Order placed successfully', order: newOrder });
 
 });
@@ -128,13 +143,13 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
     try {
         const user = req.user;
         if (user.role === 'user') {
-            const myOrders = await Orders.find({ userId:user._id }).populate('sellerId');
+            const myOrders = await Orders.find({ userId: user._id }).populate('sellerId');
             if (myOrders) {
                 console.log(myOrders)
                 res.status(200).json(myOrders);
             }
         } else if (req.user.role === 'seller') {
-            const myOrders = await Orders.find({ sellerId:user._id }).populate('userId');
+            const myOrders = await Orders.find({ sellerId: user._id }).populate('userId');
             if (myOrders) {
                 res.status(200).json(myOrders);
             }
@@ -146,19 +161,19 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
 
 export const updateOrder = async (req, res) => {
     const orderId = req.params.id;
-console.log(orderId)
+    console.log(orderId)
     try {
         // Assuming you have a model called Order
         const updatedOrder = await Orders.updateOne(
-          { _id: orderId }, // Assuming _id is the identifier for your order
-          { $set: { delivered: true } }
+            { _id: orderId }, // Assuming _id is the identifier for your order
+            { $set: { delivered: true } }
         );
         if (updatedOrder) {
-          res.status(200).json({ success: true, data: updatedOrder });
+            res.status(200).json({ success: true, data: updatedOrder });
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error updating order:', error);
         res.status(500).json({ success: false, error: 'Error updating order' });
-      }
-  };
-  
+    }
+};
+

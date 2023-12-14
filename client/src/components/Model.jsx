@@ -4,7 +4,7 @@ import Header from './Header'
 import Modal from '@mui/material/Modal'
 import { Autocomplete, Button, TextField } from '@mui/material'
 import { secondDataCompletion } from '../utils/secondAutoCompletion'
-import { addProduct } from '../actions/productAction'
+import { addProduct, productPurchase } from '../actions/productAction'
 import { useDispatch, useSelector } from 'react-redux'
 
 const style = {
@@ -19,9 +19,15 @@ const style = {
   p: 2,
 }
 
-export default function BasicModal({ open, setOpen, id, handleClose }) {
-  const {products,loading,error} = useSelector((state) => state.addProduct)
- 
+export default function BasicModal({
+  open,
+  setOpen,
+  id,
+  handleClose,
+  dashboard,
+}) {
+  const { products, loading, error } = useSelector((state) => state.addProduct)
+
   const [formData, setFormData] = useState(initialValues)
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
@@ -43,18 +49,28 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
       } else if (newValue === 'Butter') {
         setSecondAutocompleteOptions(['Salted Butter', 'Unsalted Butter'])
       } else if (newValue === 'Paneer') {
-        setSecondAutocompleteOptions([
-          'Regular Paneer',
-          'Smoked Paneer',
-        ])
+        setSecondAutocompleteOptions(['Regular Paneer', 'Smoked Paneer'])
       }
     } else {
       setFormData({ ...formData, [fieldName]: updatedValue })
     }
   }
   const handleFormSubmit = () => {
+    if(dashboard){
+      if(formData.category && formData.quantity){
+      dispatch(productPurchase(formData)) 
+      }else{
+        setFormError({
+          category: !formData.category,
+          quantity: !formData.quantity,
+        })
+      }
+    }
     if (
-      formData.category && formData.quantity && formData.category === 'Milk' && formData.quantity
+      formData.category &&
+      formData.quantity &&
+      formData.category === 'Milk' &&
+      formData.quantity
         ? formData.animalId
         : formData.type
     ) {
@@ -66,7 +82,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
         quantity: !formData.quantity,
         type: !formData.type,
         animalId: !formData.animalId,
-        quality:!formData.quality,
+        quality: !formData.quality,
       })
     }
   }
@@ -88,10 +104,14 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
           // }}
         >
           <Box sx={{ gridColumn: 'span 4' }}>
-            <Header title="ADD PRODUCT" subtitle={`ID : ${id}`} />
+            {dashboard ? (
+              <Header title="SELL MILK" />
+            ) : (
+              <Header title="ADD PRODUCT" subtitle={`ID : ${id}`} />
+            )}
           </Box>
           <Autocomplete
-            options={['Milk', 'Ghee', 'Butter', 'Paneer']}
+           options={dashboard ? ['rich','skimmed','toned','smart'] : ['Milk', 'Ghee', 'Butter', 'Paneer']}
             getOptionLabel={(option) => option}
             fullWidth
             value={formData.category}
@@ -108,7 +128,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             )}
             sx={{ gridColumn: 'span 2' }}
           />
-          {formData.category !== 'Milk' && (
+          {formData.category !== 'Milk' && !dashboard && (
             <Autocomplete
               options={secondAutocompleteOptions}
               getOptionLabel={(option) => option}
@@ -129,7 +149,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
             />
           )}
 
-          {formData.category === 'Milk' && (
+          {formData.category === 'Milk'&& !dashboard && (
             <TextField
               fullWidth
               variant="filled"
@@ -142,7 +162,7 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
               sx={{ gridColumn: 'span 2' }}
             />
           )}
-          {formData.category === 'Milk' && (
+          {formData.category === 'Milk' && !dashboard && (
             <TextField
               fullWidth
               variant="filled"
@@ -176,10 +196,8 @@ export default function BasicModal({ open, setOpen, id, handleClose }) {
               color="secondary"
               variant="contained"
               onClick={handleFormSubmit}
-              
-            
             >
-              Add product
+              {dashboard ? 'Sell':'Add product'}
             </Button>
           </Box>
         </Box>
@@ -200,5 +218,5 @@ const initialErrValues = {
   type: false,
   quantity: false,
   animalId: false,
-  quality:false,
+  quality: false,
 }

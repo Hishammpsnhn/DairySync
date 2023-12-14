@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const milkSchema = new mongoose.Schema({
   address: {
     type: String,
-    required: true,
+
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +14,7 @@ const milkSchema = new mongoose.Schema({
   sellerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Assuming there's a Seller model to reference
-    required: true,
+  
   },
   productType: {
     type: String,
@@ -23,6 +23,9 @@ const milkSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: true,
+  },
+  bookingDate:{
+    type:Date
   },
   delivered: {
     type: Boolean,

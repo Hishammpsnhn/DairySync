@@ -16,8 +16,9 @@ import LineChart from '../components/LineChart'
 import BarChart from '../components/BarChart'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { adminDashboard } from '../actions/dashboardAction'
+import BasicModal from '../components/Model'
 
 const Dashboard = () => {
   const user = useSelector((state) => state.user.user)
@@ -26,12 +27,15 @@ const Dashboard = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
-
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
   useEffect(() => {
     dispatch(adminDashboard)
   }, [dispatch])
 
   return (
+    <>
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -70,14 +74,15 @@ const Dashboard = () => {
             display="flex"
             alignItems="center"
             justifyContent="center"
+            onClick={() => handleOpen()}
           >
             <StatBox
-              title={`${dashboardStatBox.stat1} %`}
-              subtitle="Milk Stock Level"
-              progress={`${dashboardStatBox.stat1/100}`}
-              increase="+14%"
+              title={`${dashboardStatBox.stat1} L`}
+              subtitle="RICH"
+              progress={`${dashboardStatBox.stat1/500} `}
+              increase={`+${(dashboardStatBox.stat1 / 500 * 100).toFixed(2)}%`}
               icon={
-                <EmailIcon
+                <PointOfSaleIcon
                   sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
                 />
               }
@@ -94,9 +99,9 @@ const Dashboard = () => {
         >
           <StatBox
             title={`${dashboardStatBox.stat2} L`}
-            subtitle= {user?.role === 'admin' ? "Today's Milk Collection": "This Month Milk sale"}
-            progress="0.50"
-            increase="+21%"
+            subtitle= {user?.role === 'admin' ? "TONED": "This Month Milk sale"}
+            progress={`${dashboardStatBox.stat2/500} `}
+            increase={`+${(dashboardStatBox.stat2 / 500 * 100).toFixed(2)}%`}
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
@@ -113,9 +118,9 @@ const Dashboard = () => {
         >
           <StatBox
             title={`${dashboardStatBox.stat3} ${user?.role === 'admin' && "L"}`}
-            subtitle= {user?.role === 'admin' ? "Today's Milk Sale": "Milk Products Saled" }
-            progress="0.50"
-            increase="+21%"
+            subtitle= {user?.role === 'admin' ? "SMART": "Milk Products Saled" }
+            progress={`${dashboardStatBox.stat3/500} `}
+            increase={`+${(dashboardStatBox.stat3 / 500 * 100).toFixed(2)}%`}
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
@@ -132,17 +137,18 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title={`${dashboardStatBox.stat4} `}
-            subtitle= {user?.role === 'admin' ? "New Client's": "Total Breed"}
-            progress="0"
-            increase="+5%"
+            title={`${dashboardStatBox.stat4} L `}
+            subtitle= {user?.role === 'admin' ? "SKIMMED": "Total Breed"}
+            progress={`${dashboardStatBox.stat4/500} `}
+            increase={`+${(dashboardStatBox.stat4 / 500 * 100).toFixed(2)}%`}
             icon={
-              <PersonAddIcon
+              <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
               />
             }
           />
         </Box>
+      
         {/* ROW 2 */}
         <Box
           gridColumn="span 8"
@@ -297,6 +303,8 @@ const Dashboard = () => {
         </Box> */}
       </Box>
     </Box>
+      <BasicModal open={open} setOpen={setOpen} handleClose={handleClose} dashboard={true} />
+      </>
   )
 }
 

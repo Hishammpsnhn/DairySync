@@ -81,9 +81,11 @@ const Orderpage = () => {
       flex: 1,
       renderCell: ({ row }) => {
         const handleAccessLevelClick = (userId) => {
+          if(row.status === 'Pending') {
           alert('Are you sure you want to change to Delivered')
           dispatch(OrderUpdate(row.id))
           row.status = true
+         }
         }
 
         return (

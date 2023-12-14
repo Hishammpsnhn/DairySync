@@ -16,10 +16,10 @@ const dashboardSlice = createSlice({
     fetchDashboardSuccess: (state, action) => {
       console.log(action.payload)
       //{totalQuantity: 0, inventory: 0, totalClient: 4}
-      state.dashboardStatBox.stat1 = parseFloat(action.payload.inventory.toFixed(2));
-      state.dashboardStatBox.stat2 = action.payload.totalQuantity;
-      // state.dashboardStatBox.stat3 = action.payload.totalQuantity;
-      state.dashboardStatBox.stat4 = action.payload.totalClient;
+       state.dashboardStatBox.stat1 = action.payload.rich.quantity
+       state.dashboardStatBox.stat2 = action.payload.toned.quantity
+       state.dashboardStatBox.stat3 = action.payload.smart.quantity
+       state.dashboardStatBox.stat4 = action.payload.skimmed.quantity
       state.loading = false;
     },
     

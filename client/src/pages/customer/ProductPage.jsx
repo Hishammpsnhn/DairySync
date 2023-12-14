@@ -63,7 +63,7 @@ export default function ProductPage() {
     paymentMethod: 'COD',
     address: '',
     bookingDate: null, // New field for booking date
-    sellerId: '',
+    sellerId: null,
   })
 
   const handleChange = (name, value) => {

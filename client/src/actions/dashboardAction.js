@@ -13,8 +13,8 @@ export const adminDashboard = async (dispatch, getState) => {
       };
   
        const { data } = await axios.get('/api/dashboard', config);
-    //   console.log(data)
-      dispatch(fetchDashboardSuccess(data))
+       console.log(data)
+      dispatch(fetchDashboardSuccess(data[0]))
     } catch (error) {
       console.error('Error:', error);
       dispatch(fetchDashboardFailure(error));
