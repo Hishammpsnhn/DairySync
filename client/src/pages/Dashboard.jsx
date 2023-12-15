@@ -17,12 +17,12 @@ import BarChart from '../components/BarChart'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { adminDashboard } from '../actions/dashboardAction'
+import { adminDashboard, adminDashboardBooking } from '../actions/dashboardAction'
 import BasicModal from '../components/Model'
 
 const Dashboard = () => {
   const user = useSelector((state) => state.user.user)
-  const {dashboardStatBox,loading,error} = useSelector((state) => state.dashboard);
+  const {dashboardStatBox,loading,error,bookingOrders} = useSelector((state) => state.dashboard);
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -30,8 +30,10 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
   useEffect(() => {
     dispatch(adminDashboard)
+    dispatch(adminDashboardBooking)
   }, [dispatch])
 
   return (
@@ -205,12 +207,12 @@ const Dashboard = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Recent Booking
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {bookingOrders.map((order, i) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${order.txId}-${i}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -223,19 +225,19 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {order?.productType}
                 </Typography>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {order.userId.contactno}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>{new Date(order.bookingDate).toLocaleDateString()}</Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                {order.quantity} L
               </Box>
             </Box>
           ))}

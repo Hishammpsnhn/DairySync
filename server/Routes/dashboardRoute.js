@@ -1,5 +1,5 @@
 import express from "express";
-import { getDashboardSellerCredentials, getDashboardAdminCredentials } from "../controllers/dashbordController.js";
+import { getDashboardSellerCredentials, getDashboardAdminCredentials,getAdminBooking, getAdminLineGraph } from "../controllers/dashbordController.js";
 import { admin, protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -17,5 +17,7 @@ const router = express.Router();
 //     }
 // });
 router.route('/').get(getDashboardAdminCredentials);
+router.route('/booking').get(getAdminBooking);
+router.route('/linegraph').get(getAdminLineGraph);
 
 export default router
