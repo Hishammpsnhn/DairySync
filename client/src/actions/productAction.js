@@ -2,13 +2,11 @@ import axios from 'axios';
 import { addProductFailure, addProductStart, addProductSuccess } from '../reducers/addProductReducer';
 
 export const addProduct = (formData, id) => async (dispatch, getState) => {
-    console.log(id);
 
     try {
         dispatch(addProductStart()); // Corrected dispatch invocation
 
         const { user: { user } } = getState();
-        console.log(user);
 
         const config = {
             headers: {
@@ -72,7 +70,6 @@ export const productPurchase = (formData) => async (dispatch, getState) => {
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
-        console.log(user);
 
         const config = {
             headers: {

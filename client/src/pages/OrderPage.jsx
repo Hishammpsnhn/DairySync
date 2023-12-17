@@ -23,6 +23,7 @@ const Orderpage = () => {
       setLoading(true)
       if (user && user.role !== 'admin') {
         const orders = await dispatch(myOrders)
+        console.log(orders)
         if (orders) {
           setLoading(false)
           setOrders(orders)
@@ -34,16 +35,17 @@ const Orderpage = () => {
 
   const rows = orders.map((order, index) => {
     return {
-      id: order._id, // Use the index as the id
+      id: index+1, 
+      productType: order.productType,
       phone:
         user.role === 'seller'
-          ? order.userId.contactno
-          : order.sellerId.contactno,
+          ? order.userId?.contactno
+          : order.sellerId?.contactno,
       address: order.address,
       name:
         user.role === 'seller'
-          ? order.userId.userName
-          : order.sellerId.userName,
+          ? order.userId?.userName
+          : order.sellerId?.userName,
       quantity: order.quantity,
       status: order.delivered,
       // Add other properties as needed
@@ -52,6 +54,11 @@ const Orderpage = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID' },
+    {
+      field: 'productType',
+      headerName: 'Product',
+      flex: 1,
+    },
     {
       field: 'name',
       headerName: user.role === 'seller' ? 'Name' : 'Seller Name',
@@ -81,7 +88,7 @@ const Orderpage = () => {
       flex: 1,
       renderCell: ({ row }) => {
         const handleAccessLevelClick = (userId) => {
-          if(row.status === 'Pending') {
+          if(!row.status ) {
           alert('Are you sure you want to change to Delivered')
           dispatch(OrderUpdate(row.id))
           row.status = true

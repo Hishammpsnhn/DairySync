@@ -107,7 +107,7 @@ export const ProductSellers = expressAsyncHandler(async (req, res) => {
 // @route   POST /api/product/purchase
 // @access  Private
 export const purchase = expressAsyncHandler(async (req, res) => {
-    console.log(req.body)
+
     const { Type, quantity, paymentMethod, address, bookingDate, sellerId, category } = req.body.formData;
     const userId = req.user._id; // Adjust based on your authentication setup
 
@@ -145,7 +145,6 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
         if (user.role === 'user') {
             const myOrders = await Orders.find({ userId: user._id }).populate('sellerId');
             if (myOrders) {
-                console.log(myOrders)
                 res.status(200).json(myOrders);
             }
         } else if (req.user.role === 'seller') {
@@ -161,7 +160,6 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
 
 export const updateOrder = async (req, res) => {
     const orderId = req.params.id;
-    console.log(orderId)
     try {
         // Assuming you have a model called Order
         const updatedOrder = await Orders.updateOne(

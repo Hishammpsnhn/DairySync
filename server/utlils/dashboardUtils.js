@@ -3,7 +3,6 @@ import User from "../models/userModel.js";
 
 export const getTotalQuantity = async () => {
     // Set today's date to the beginning of the day
-    console.log("Total quantity")
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     // Run the aggregation pipeline
@@ -34,12 +33,10 @@ export const getTotalQuantity = async () => {
 }
 
 export const Inventory = async (todayMilkCollection, maxCapacity = 1000) => {
-    console.log("inventory",todayMilkCollection);
     const per =  (todayMilkCollection / maxCapacity) * 100;
     return per;
 }
 export const getUsersCount = async () => {
-    console.log("get users count");
     try {
         const userCount = await User.countDocuments();
         return userCount - 1

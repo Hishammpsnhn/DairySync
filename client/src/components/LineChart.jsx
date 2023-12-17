@@ -12,15 +12,16 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
   const {lineGraph,loading,error} = useSelector((state) => state.dashboard);
-
+  const user = useSelector((state) => state.user.user);
+  
   useEffect(() => {
-    const func = async () => {
+    const adminLineGraph = async () => {
       const data = await dispatch(adminDashboardLineGraph)
       const result = await getMonthlyData(data)
       dispatch(lineGraphSuccess(result))
     }
-    func()
-  }, [dispatch])
+    if(user.role === 'admin') adminLineGraph()
+  }, [dispatch,user.role])
 
   return (
     <Box height="90%" overflow="hidden">

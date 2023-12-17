@@ -8,7 +8,8 @@ const dashboardSlice = createSlice({
     loading: false,
     error: null,
     bookingOrders: [],
-    lineGraph: []
+    lineGraph: [],
+    barGraph: [],
   },
   reducers: {
     fetchDashboardStart: (state) => {
@@ -22,11 +23,20 @@ const dashboardSlice = createSlice({
       state.dashboardStatBox.stat4 = action.payload.skimmed.quantity
       state.loading = false;
     },
+    fetchSellerDashboardSuccess: (state, action) => {
+      state.dashboardStatBox.stat2 = action.payload[0].orderCount
+      state.dashboardStatBox.stat3 = action.payload[1].productCount
+      state.dashboardStatBox.stat4 = action.payload[2].animalCount
+      state.loading = false;
+    },
     fetchDashboardBookingOrders: (state, action) => {
       state.bookingOrders = action.payload
     },
     lineGraphSuccess: (state, action) => {
       state.lineGraph = action.payload
+    },
+    barGraphSuccess: (state, action) => {
+      state.barGraph = action.payload
     },
     fetchDashboardFailure: (state, action) => {
       state.loading = false;
@@ -40,6 +50,8 @@ export const {
   fetchDashboardStart,
   fetchDashboardSuccess,
   fetchDashboardBookingOrders,
-  lineGraphSuccess
+  fetchSellerDashboardSuccess,
+  lineGraphSuccess,
+  barGraphSuccess
 } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

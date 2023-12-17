@@ -59,6 +59,8 @@ export default function BasicModal({
     if(dashboard){
       if(formData.category && formData.quantity){
       dispatch(productPurchase(formData)) 
+      setFormData(initialValues)
+      handleClose()
       }else{
         setFormError({
           category: !formData.category,

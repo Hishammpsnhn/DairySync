@@ -1,23 +1,12 @@
 import express from "express";
-import { getDashboardSellerCredentials, getDashboardAdminCredentials,getAdminBooking, getAdminLineGraph } from "../controllers/dashbordController.js";
-import { admin, protect } from "../middleware/authMiddleware.js";
+import { getDashboardSellerCredentials, getDashboardAdminCredentials,getAdminBooking,getSellerBarGraph, getAdminLineGraph,getSellerOrders } from "../controllers/dashbordController.js";
+import { admin, protect, seller } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
-// router.route('/').get(protect, (req, res, next) => {
-//     // Check the user role and call the appropriate controller function
-//     if (req.user.role === 'admin') {
-//         admin(req, res, next);
-//         getDashboardAdminCredentials(req, res);
-//     } else if (req.user.role === 'seller') {
-//         seller(req, res, next);
-//         getDashboardSellerCredentials(req, res);
-//     } else {
-//         // Handle other cases or send an error response
-//         res.status(403).json({ message: 'Unauthorized' });
-//     }
-// });
-router.route('/').get(getDashboardAdminCredentials);
-router.route('/booking').get(getAdminBooking);
-router.route('/linegraph').get(getAdminLineGraph);
-
+router.route('/admin').get(getDashboardAdminCredentials);
+router.route('/admin/booking').get(getAdminBooking);
+router.route('/admin/linegraph').get(getAdminLineGraph);
+router.route('/seller').get(protect,seller,getDashboardSellerCredentials);
+router.route('/seller/orders').get(protect,seller,getSellerOrders);
+router.route('/seller/bargraph').get(protect,seller,getSellerBarGraph);
 export default router
