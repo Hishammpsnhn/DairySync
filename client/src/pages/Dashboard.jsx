@@ -138,6 +138,7 @@ const Dashboard = () => {
             display="flex"
             alignItems="center"
             justifyContent="center"
+            onClick={() => handleOpen()}
           >
             <StatBox
               title={
@@ -359,7 +360,9 @@ const Dashboard = () => {
         open={open}
         setOpen={setOpen}
         handleClose={handleClose}
-        dashboard={true}
+        id={user._id}
+        addMilk={user.role === 'admin' ? true : false} 
+        seller = {true}
       />
     </>
   )

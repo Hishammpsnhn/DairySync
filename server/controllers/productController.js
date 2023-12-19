@@ -50,6 +50,14 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
                     res.status(200).json(product)
             }
         } else {
+            const existingProduct = await Product.findOne({
+                sellerId,
+                type,
+            });
+    
+            if (existingProduct) {
+                return res.status(400).json({ success: false, error: 'Product already exists for this seller and type' });
+            }
             const product = await Product.create({
                 sellerId,
                 category,
@@ -167,7 +175,6 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
 
 export const updateOrder = async (req, res) => {
     const orderId = req.params.id;
-    console.log(orderId);
 
     try {
         // Assuming you have a model called Order
@@ -177,11 +184,47 @@ export const updateOrder = async (req, res) => {
             { new: true } // Return the modified document rather than the original
         );
 
-        console.log(updatedOrder);
-
         if (updatedOrder) {
             res.status(200).json({ success: true, data: updatedOrder });
         }
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).json({ success: false, error: 'Error updating order' });
+    }
+};
+export const getproduct = async (req, res) => {
+    const userId = req.user.id;
+ 
+    try {
+        const result = await Product.find({
+            sellerId: userId,
+            type: { $exists: true }
+        });
+        if (result) {
+            res.status(200).json(result);
+        }
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).json({ success: false, error: 'Error updating order' });
+    }
+};
+export const deleteSellerProduct = async (req, res) => {
+    const userId = req.user.id;
+    const productId = req.params.id;
+    console.log(userId,productId);
+
+    try {
+        const deletedProduct = await Product.findOneAndDelete({
+            sellerId: userId,
+            _id: productId,
+        });
+
+        if (!deletedProduct) {
+            return res.status(404).json({ success: false, error: 'Product not found' });
+        }
+
+        res.status(200).json(deletedProduct);
+
     } catch (error) {
         console.error('Error updating order:', error);
         res.status(500).json({ success: false, error: 'Error updating order' });

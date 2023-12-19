@@ -1,10 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Header from './Header'
 import Modal from '@mui/material/Modal'
-import { Autocomplete, Button, TextField } from '@mui/material'
+import {
+  Autocomplete,
+  Button,
+  Chip,
+  Grid,
+  Stack,
+  TextField,
+} from '@mui/material'
 import { secondDataCompletion } from '../utils/secondAutoCompletion'
-import { addProduct, productPurchase } from '../actions/productAction'
+import {
+  addProduct,
+  deleteSellerProduct,
+  getproduct,
+  productPurchase,
+} from '../actions/productAction'
 import { useDispatch, useSelector } from 'react-redux'
 
 const style = {
@@ -24,14 +36,36 @@ export default function BasicModal({
   setOpen,
   id,
   handleClose,
-  dashboard,
+  addMilk,
+  seller,
 }) {
   const { products, loading, error } = useSelector((state) => state.addProduct)
-
+  const user = useSelector((state) => state.user.user)
   const [formData, setFormData] = useState(initialValues)
+  const [isProducts, setIsProucts] = useState([])
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    const getProductFn = async () => {
+      try {
+        dispatch(getproduct)
+      } catch (error) {
+        console.error('Error fetching product:', error)
+      }
+    }
+
+    if (user.role === 'seller') getProductFn()
+  }, [dispatch, user])
+
+  const handleDeleteSellerProduct = async (id) => {
+    await dispatch(deleteSellerProduct(id))
+    setIsProucts((prev) => {
+      return prev.filter((product) => product._id !== id)
+    })
+    console.log(isProducts)
+  }
 
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
@@ -39,7 +73,6 @@ export default function BasicModal({
         ? event.target.value
         : newValue
       : newValue
-    console.log(fieldName, event, newValue, updatedValue)
     if (fieldName === 'category' || fieldName === 'type') {
       setFormData({ ...formData, [fieldName]: newValue })
       if (newValue === 'Milk') {
@@ -56,12 +89,12 @@ export default function BasicModal({
     }
   }
   const handleFormSubmit = () => {
-    if(dashboard){
-      if(formData.category && formData.quantity){
-      dispatch(productPurchase(formData)) 
-      setFormData(initialValues)
-      handleClose()
-      }else{
+    if (addMilk) {
+      if (formData.category && formData.quantity) {
+        dispatch(productPurchase(formData))
+        setFormData(initialValues)
+        handleClose()
+      } else {
         setFormError({
           category: !formData.category,
           quantity: !formData.quantity,
@@ -106,14 +139,38 @@ export default function BasicModal({
           // }}
         >
           <Box sx={{ gridColumn: 'span 4' }}>
-            {dashboard ? (
+            {addMilk ? (
               <Header title="SELL MILK" />
             ) : (
               <Header title="ADD PRODUCT" subtitle={`ID : ${id}`} />
             )}
+            <Grid
+              container
+              spacing={{ xs: 2, md: 2 }}
+              columns={{ xs: 4, sm: 8, md: 12 }}
+            >
+              {products.map((product, index) => (
+                <Grid item xs={2} sm={2} md={2} key={index}>
+                  <Chip
+                    label={product.type}
+                    onDelete={() => {
+                      if (user.role === 'seller')
+                        handleDeleteSellerProduct(product._id)
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </Box>
+
           <Autocomplete
-           options={dashboard ? ['rich','skimmed','toned','smart'] : ['Milk', 'Ghee', 'Butter', 'Paneer']}
+            options={
+              addMilk
+                ? ['rich', 'skimmed', 'toned', 'smart']
+                : seller
+                ? ['Ghee', 'Butter', 'Paneer']
+                : ['Milk', 'Ghee', 'Butter', 'Paneer']
+            }
             getOptionLabel={(option) => option}
             fullWidth
             value={formData.category}
@@ -130,7 +187,7 @@ export default function BasicModal({
             )}
             sx={{ gridColumn: 'span 2' }}
           />
-          {formData.category !== 'Milk' && !dashboard && (
+          {formData.category !== 'Milk' && !addMilk && (
             <Autocomplete
               options={secondAutocompleteOptions}
               getOptionLabel={(option) => option}
@@ -151,7 +208,7 @@ export default function BasicModal({
             />
           )}
 
-          {formData.category === 'Milk'&& !dashboard && (
+          {formData.category === 'Milk' && !addMilk && (
             <TextField
               fullWidth
               variant="filled"
@@ -164,7 +221,7 @@ export default function BasicModal({
               sx={{ gridColumn: 'span 2' }}
             />
           )}
-          {formData.category === 'Milk' && !dashboard && (
+          {formData.category === 'Milk' && !addMilk && (
             <TextField
               fullWidth
               variant="filled"
@@ -199,7 +256,7 @@ export default function BasicModal({
               variant="contained"
               onClick={handleFormSubmit}
             >
-              {dashboard ? 'Sell':'Add product'}
+              {addMilk ? 'Sell' : 'Add product'}
             </Button>
           </Box>
         </Box>

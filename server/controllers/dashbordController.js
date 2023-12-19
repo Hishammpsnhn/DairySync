@@ -46,7 +46,7 @@ export const getDashboardSellerCredentials = async (req, res) => {
 
     const [orderCount, productCount, animalCount] = await Promise.all([
       Orders.countDocuments({ sellerId: userId, delivered: false }),
-      Product.countDocuments({ sellerId: userId }),
+      Product.countDocuments({ sellerId: userId, type: { $exists: true } }),
       Animal.countDocuments({ ownerId: userId }),
     ]);
 
@@ -70,7 +70,6 @@ export const getSellerOrders = async (req, res) => {
     })
       .populate('userId')
       .exec();
-    console.log(ordersWithBooking);
     res.status(200).json(ordersWithBooking);
   } catch (error) {
     console.error("Error fetching data:", error);

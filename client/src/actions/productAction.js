@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { addProductFailure, addProductStart, addProductSuccess } from '../reducers/addProductReducer';
+import { ProductSuccessFetch, addProductFailure, addProductStart, addProductSuccess, deleteProduct, deleteProductStart } from '../reducers/addProductReducer';
 
 export const addProduct = (formData, id) => async (dispatch, getState) => {
 
@@ -16,7 +16,6 @@ export const addProduct = (formData, id) => async (dispatch, getState) => {
         };
 
         const { data } = await axios.post(`/api/product/${id}`, { formData }, config);
-        console.log(data);
         dispatch(addProductSuccess(data));
     } catch (error) {
         console.error('Error:', error);
@@ -33,7 +32,6 @@ export const addProduct = (formData, id) => async (dispatch, getState) => {
 };
 
 export const findProductSellers = (type) => async (dispatch, getState) => {
-    console.log(type, "fomr kajf")
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
 
@@ -150,6 +148,63 @@ export const OrderUpdate = (id) => async (dispatch, getState) => {
         } else {
             console.error('Generic Error');
             // dispatch(addProductFailure("Something went wrong"));
+        }
+    }
+};
+export const getproduct = async (dispatch, getState) => {
+     dispatch(addProductStart());
+    try {
+        const { user: { user } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user?.token}`,
+            },
+        };
+        console.log(config);
+        const { data } = await axios.get(`/api/product`, config);
+   
+        dispatch(ProductSuccessFetch(data));
+    } catch (error) {
+        console.error('Error:', error);
+
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.message;
+            console.error('Server Error Message:', errorMessage);
+             dispatch(addProductFailure(errorMessage));
+        } else {
+            console.error('Generic Error');
+            dispatch(addProductFailure("Something went wrong"));
+        }
+    }
+};
+
+export const deleteSellerProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch(addProductStart()); // Corrected dispatch invocation
+        const { user: { user } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user?.token}`,
+            },
+        };
+        console.log(config);
+        const { data } = await axios.delete(`/api/product/${id}`, config);
+        console.log(data);
+        dispatch(deleteProduct(data));
+    } catch (error) {
+        console.error('Error:', error);
+
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.message;
+            console.error('Server Error Message:', errorMessage);
+            dispatch(addProductFailure(errorMessage));
+        } else {
+            console.error('Generic Error');
+            dispatch(addProductFailure("Something went wrong"));
         }
     }
 };
