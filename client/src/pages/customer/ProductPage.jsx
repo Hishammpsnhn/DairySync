@@ -34,8 +34,19 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { findProductSellers, productPurchase } from '../../actions/productAction'
+import {
+  findProductSellers,
+  productPurchase,
+} from '../../actions/productAction'
 import { useDispatch } from 'react-redux'
+
+const initialErrValues = {
+  Type: false,
+  quantity: false,
+  paymentMethod: false,
+  bookingDate: false, // New field for booking date
+  sellerId: false,
+}
 
 export default function ProductPage() {
   const theme = useTheme()
@@ -43,7 +54,7 @@ export default function ProductPage() {
   const dispatch = useDispatch()
   const { productname } = useParams()
   const [sellers, setSellers] = useState([])
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const selectedGroceryItem = groceryItems.find(
     (item) => item.category.toLowerCase() === productname.toLowerCase()
@@ -62,9 +73,10 @@ export default function ProductPage() {
     quantity: '',
     paymentMethod: 'COD',
     address: '',
-    bookingDate: null, // New field for booking date
+    bookingDate: '', // New field for booking date
     sellerId: null,
   })
+  const [formError, setFormError] = useState(initialErrValues)
 
   const handleChange = (name, value) => {
     setFormData((prevData) => ({
@@ -74,8 +86,47 @@ export default function ProductPage() {
   }
 
   const handlePrint = () => {
-    console.log("handlepurchase")
-    dispatch(productPurchase(formData))
+    console.log(formData)
+    if (
+      formData.Type &&
+      formData.address &&
+      formData.quantity
+    ) {
+     
+      if (
+        formData.Type === 'Rich' ||
+        formData.Type === 'Toned' ||
+        formData.Type === 'Smart' ||
+        formData.Type === 'Skimmed'
+      ) {
+        console.log("it mils")
+        if (formData.bookingDate ) {
+          console.log("it have date")
+          console.log(formData)
+          dispatch(productPurchase(formData))
+        } else {
+          console.log("not have date")
+          setFormError({
+            bookingDate: !formData.bookingDate,
+          })
+        }
+      }else{
+       
+        if(formData.sellerId !== null){
+     
+          dispatch(productPurchase(formData))
+        }else{
+          console.log(formData)
+          setFormError({sellerId: !formData.sellerId});
+        }
+      }
+    } else {
+      setFormError({
+        Type: !formData.Type,
+        address: !formData.address,
+        quantity: !formData.quantity
+      })
+    }
   }
 
   useEffect(() => {
@@ -95,6 +146,7 @@ export default function ProductPage() {
 
     fetchData()
   }, [selectedGroceryItem.category, formData.Type, dispatch])
+  console.log(formError)
 
   return (
     <Stack
@@ -148,6 +200,7 @@ export default function ProductPage() {
                   id="milk-type-select"
                   name="Type"
                   value={formData.Type}
+                  error={formError.Type}
                   label="Milk Type"
                   onChange={(e) => handleChange(e.target.name, e.target.value)}
                 >
@@ -167,6 +220,7 @@ export default function ProductPage() {
               <Select
                 name="sellerId"
                 value={formData.sellerId}
+                error={true}
                 label="seller Name"
                 onChange={(e) => handleChange(e.target.name, e.target.value)}
               >
@@ -209,7 +263,7 @@ export default function ProductPage() {
             required
             name="quantity"
             id="quantity"
-            
+            error={formError.quantity}
             fullWidth
             type="number"
             label="Quantity/L/KG"
@@ -220,6 +274,7 @@ export default function ProductPage() {
             margin="normal"
             fullWidth
             required
+            error={formError.address}
             name="address"
             id="address"
             label="Address"
@@ -233,7 +288,7 @@ export default function ProductPage() {
                   label="Booking Date"
                   value={formData.bookingDate}
                   onChange={(newDate) => handleChange('bookingDate', newDate)}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <TextField {...params}  error={formError.bookingDate}  />}
                 />
               </DemoContainer>
             </LocalizationProvider>

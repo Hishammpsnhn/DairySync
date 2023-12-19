@@ -38,6 +38,7 @@ export const getMonthlyData = async (data) => {
       const result = Object.values(monthlyData).sort((a, b) =>
         monthToIndex(a.data[0].x) - monthToIndex(b.data[0].x)
       );
+      console.log(result);
      return result;
     } catch (error) {
       console.error('Error fetching data:', error);

@@ -111,7 +111,7 @@ export const purchase = expressAsyncHandler(async (req, res) => {
     const { Type, quantity, paymentMethod, address, bookingDate, sellerId, category } = req.body.formData;
     const userId = req.user._id; // Adjust based on your authentication setup
 
-    if( category === 'skimmed' || category === 'rich' || category ==='toned' || category ==='smart'){
+    if (category === 'skimmed' || category === 'rich' || category === 'toned' || category === 'smart') {
         await Milk.updateOne(
             {},
             {
@@ -127,7 +127,7 @@ export const purchase = expressAsyncHandler(async (req, res) => {
         address,
         userId,
         sellerId,
-        bookingDate:bookingDate,
+        bookingDate: bookingDate,
         productType: Type ? Type : category,
         quantity,
         delivered: false,
@@ -143,15 +143,22 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
     try {
         const user = req.user;
         if (user.role === 'user') {
-            const myOrders = await Orders.find({ userId: user._id }).populate('sellerId');
+            const myOrders = await Orders.find({ userId: user._id }).populate('sellerId').sort({ delivered: 1 });
             if (myOrders) {
                 res.status(200).json(myOrders);
             }
         } else if (req.user.role === 'seller') {
-            const myOrders = await Orders.find({ sellerId: user._id }).populate('userId');
+            const myOrders = await Orders.find({ sellerId: user._id }).populate('userId').sort({ delivered: 1 });
             if (myOrders) {
                 res.status(200).json(myOrders);
             }
+        } else if (req.user.role === 'admin') {
+            const ordersWithBooking = await Orders.find({
+                bookingDate: { $ne: null },
+            }).populate('userId')
+                .sort({ delivered: 1 })
+                .exec();
+            res.status(200).json(ordersWithBooking);
         }
     } catch (error) {
         res.status(400).json({ message: error.message })
@@ -160,12 +167,18 @@ export const myOrders = expressAsyncHandler(async (req, res) => {
 
 export const updateOrder = async (req, res) => {
     const orderId = req.params.id;
+    console.log(orderId);
+
     try {
         // Assuming you have a model called Order
-        const updatedOrder = await Orders.updateOne(
+        const updatedOrder = await Orders.findOneAndUpdate(
             { _id: orderId }, // Assuming _id is the identifier for your order
-            { $set: { delivered: true } }
+            { $set: { delivered: true } },
+            { new: true } // Return the modified document rather than the original
         );
+
+        console.log(updatedOrder);
+
         if (updatedOrder) {
             res.status(200).json({ success: true, data: updatedOrder });
         }

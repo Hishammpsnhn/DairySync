@@ -138,7 +138,7 @@ export const OrderUpdate = (id) => async (dispatch, getState) => {
         console.log(config);
         const { data } = await axios.get(`/api/product/myorders/${id}`, config);
         console.log(data);
-        return data;
+        return data.data;
         // dispatch(addProductSuccess(data));
     } catch (error) {
         console.error('Error:', error);

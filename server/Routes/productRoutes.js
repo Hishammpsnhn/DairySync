@@ -9,6 +9,6 @@ router.route('/purchase').post(protect,purchase);
 router.route('/:id').post(protect,admin,addProduct);
 router.route('/sellers').get(ProductSellers);
 router.route('/myorders').get(protect,myOrders)
-router.route('/myorders/:id').get(protect,seller,updateOrder)
+router.route('/myorders/:id').get(protect,updateOrder)
 
 export default router

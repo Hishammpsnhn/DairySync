@@ -21,7 +21,7 @@ const Orderpage = () => {
   useEffect(() => {
     const fetchMyOrders = async () => {
       setLoading(true)
-      if (user && user.role !== 'admin') {
+      if (user) {
         const orders = await dispatch(myOrders)
         console.log(orders)
         if (orders) {
@@ -35,17 +35,21 @@ const Orderpage = () => {
 
   const rows = orders.map((order, index) => {
     return {
-      id: index+1, 
+      id: order._id,
       productType: order.productType,
       phone:
-        user.role === 'seller'
+        user.role === 'seller' || user.role === 'admin'
           ? order.userId?.contactno
-          : order.sellerId?.contactno,
+          : order.sellerId?.contactno
+          ? order.sellerId?.contactno
+          : '01010101',
       address: order.address,
       name:
-        user.role === 'seller'
+        user.role === 'seller' || user.role === 'admin'
           ? order.userId?.userName
-          : order.sellerId?.userName,
+          : order.sellerId?.userName
+          ? order.sellerId?.userName
+          : 'society',
       quantity: order.quantity,
       status: order.delivered,
       // Add other properties as needed
@@ -61,7 +65,7 @@ const Orderpage = () => {
     },
     {
       field: 'name',
-      headerName: user.role === 'seller' ? 'Name' : 'Seller Name',
+      headerName: 'Name',
       flex: 1,
       cellClassName: 'name-column--cell',
     },
@@ -78,7 +82,7 @@ const Orderpage = () => {
     },
     {
       field: 'phone',
-      headerName: user.role === 'seller' ? 'Phone Number' : 'Seller Phone No',
+      headerName: 'Phone Number',
       flex: 1,
     },
 
@@ -87,12 +91,22 @@ const Orderpage = () => {
       headerName: 'Status',
       flex: 1,
       renderCell: ({ row }) => {
-        const handleAccessLevelClick = (userId) => {
-          if(!row.status ) {
-          alert('Are you sure you want to change to Delivered')
-          dispatch(OrderUpdate(row.id))
-          row.status = true
-         }
+        const handleAccessLevelClick = async (userId) => {
+          if (!row.status) {
+            const userConfirmed = window.confirm(
+              'Are you sure you want to change to Delivered?'
+            )
+            if (userConfirmed) {
+              const updatedOrder = await dispatch(OrderUpdate(row.id))
+              console.log(updatedOrder);
+              setOrders((prevOrders) =>
+                prevOrders.map((order) =>
+                  order._id === updatedOrder._id ? updatedOrder : order
+                )
+              )
+              console.log(orders)
+            }
+          }
         }
 
         return (
@@ -104,11 +118,11 @@ const Orderpage = () => {
             backgroundColor={!row.status ? 'red' : 'green'}
             borderRadius="4px"
             onClick={() =>
-              user.role === 'seller' && handleAccessLevelClick(row.id)
+              user.role !== 'user' && handleAccessLevelClick(row.id)
             }
             style={{
-              cursor: user.role === 'seller' ? 'pointer' : 'default',
-              opacity: user.role === 'seller' ? '1' : '0.7',
+              cursor: user.role !== 'user' ? 'pointer' : 'default',
+              opacity: user.role !== 'user' ? '1' : '0.7',
             }}
           >
             <Typography color={colors.grey[100]} sx={{ ml: '5px' }}>

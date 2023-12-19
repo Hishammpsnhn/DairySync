@@ -18,6 +18,7 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
     const adminLineGraph = async () => {
       const data = await dispatch(adminDashboardLineGraph)
       const result = await getMonthlyData(data)
+      console.log(result)
       dispatch(lineGraphSuccess(result))
     }
     if(user.role === 'admin') adminLineGraph()

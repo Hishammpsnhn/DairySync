@@ -32,7 +32,7 @@ export const getAdminBooking = async (req, res) => {
 
 export const getAdminLineGraph = async (req, res) => {
   try {
-    const orders = await Orders.find({ bookingDate: { $exists: true } }); // Adjust the query as needed
+    const orders =await Orders.find({ bookingDate: { $exists: true, $ne: null } });
     res.status(200).json(orders);
   } catch (error) {
     console.error('Error fetching data:', error);

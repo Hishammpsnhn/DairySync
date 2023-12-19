@@ -211,7 +211,7 @@ const Dashboard = () => {
                   color={colors.greenAccent[500]}
                 >
                   {/* $59,342.32 */}
-                  Orders Generated
+                  {user.role !== 'admin' ?'Orders Generated':'Milk supply' }
                 </Typography>
               </Box>
               <Box>
@@ -223,7 +223,11 @@ const Dashboard = () => {
               </Box>
             </Box>
             <Box height="250px" m="-20px 0 0 0">
-              <BarChart isDashboard={true} />
+              {user.role === 'admin' ? (
+                <LineChart isDashboard={true} />
+              ) : (
+                <BarChart isDashboard={true} />
+              )}
             </Box>
           </Box>
           <Box
@@ -256,7 +260,7 @@ const Dashboard = () => {
                 alignItems="center"
                 borderBottom={`4px solid ${colors.primary[500]}`}
                 p="15px"
-                onClick={() => user.role === 'seller' && navigate('/orders')}
+                onClick={() =>  navigate('/orders')}
               >
                 <Box>
                   <Typography
@@ -281,7 +285,7 @@ const Dashboard = () => {
                   borderRadius="4px"
                 >
                   {order.quantity}{' '}
-                  <span style={{ fontSize: '11px' }}>
+                  <span style={{ fontSize: '12px' }}>
                     {user.role === 'admin' ? ' L ' : 'Kg'}
                   </span>
                 </Box>
