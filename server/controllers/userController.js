@@ -24,7 +24,7 @@ export const authUser = asyncHandler(async (req, res) => {
     })
   } else {
     res.status(404);
-    res.json({ message: "User not found" });
+    res.json({ message: "Invalid Username or Password" });
   }
 });
 

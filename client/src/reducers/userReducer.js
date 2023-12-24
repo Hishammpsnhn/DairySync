@@ -9,24 +9,28 @@ const userSlice = createSlice({
     initialState: {
         user: userInfoFromStorage,
         isAuthenticated: userInfoFromStorage === null ? false : true,
-        loading: false, // Add loading state
+        loading: false, 
+        error:null,
     },
     reducers: {
         loginStart: (state) => {
             state.loading = true;
+            state.error = null;
         },
         loginSuccess: (state, action) => {
             state.user = action.payload;
             state.isAuthenticated = true;
             state.loading = false;
+            state.error = null;
         },
-        loginFailure: (state) => {
+        loginFailure: (state,action) => {
             state.loading = false;
+            state.error = action.payload;
         },
         logout: (state) => {
-            console.log("logged out");
             state.user = null;
             state.isAuthenticated = false;
+            state.error = null;
         },
     },
 });

@@ -11,7 +11,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { tokens } from '../theme'
 import { useTheme } from '@emotion/react'
-import { Grid } from '@mui/material'
+import { Alert, AlertTitle, CircularProgress, Grid } from '@mui/material'
 import { login, registerUser } from '../actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -21,9 +21,10 @@ export default function Auth() {
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const location = useLocation();
 
-  const {isAuthenticated,user} = useSelector((state) => state.user)
+  const { isAuthenticated, user, loading, error } = useSelector(
+    (state) => state.user
+  )
 
   const [isLogin, setIsLogin] = React.useState(false)
 
@@ -37,13 +38,13 @@ export default function Auth() {
 
   useEffect(() => {
     if (isAuthenticated && user.role !== 'user') {
-      navigate('/dashboard');
-      return;
-    }else if (isAuthenticated && user.role === 'user') {
-      navigate('/home');
-      return;
+      navigate('/dashboard')
+      return
+    } else if (isAuthenticated && user.role === 'user') {
+      navigate('/home')
+      return
     }
-  }, [isAuthenticated, navigate, user]);
+  }, [isAuthenticated, navigate, user])
 
   return (
     <Container component="main" maxWidth="xs">
@@ -61,7 +62,12 @@ export default function Auth() {
         <Typography component="h1" variant="h5">
           {isLogin ? 'Sign in' : 'Register'}
         </Typography>
-
+        {error && (
+          <Alert sx={{width:'100%',margin:'10px'}} severity="error" >
+            <AlertTitle>Error</AlertTitle>
+            {error} — <strong>check it out!</strong>
+          </Alert>
+        )}
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
@@ -200,7 +206,13 @@ export default function Auth() {
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  {isLogin ? 'Sign in' : 'Register'}
+                  {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : isLogin ? (
+                    'Sign in'
+                  ) : (
+                    'Register'
+                  )}
                 </Button>
               </Box>
             </form>

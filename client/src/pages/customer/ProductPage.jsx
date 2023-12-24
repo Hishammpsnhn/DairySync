@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  CircularProgress,
   Divider,
   FormControlLabel,
   List,
@@ -55,6 +56,7 @@ export default function ProductPage() {
   const { productname } = useParams()
   const [sellers, setSellers] = useState([])
   const [loading, setLoading] = useState(false)
+  const [sellerLoading, setSellerLoading] = useState(false)
 
   const selectedGroceryItem = groceryItems.find(
     (item) => item.category.toLowerCase() === productname.toLowerCase()
@@ -85,46 +87,36 @@ export default function ProductPage() {
     }))
   }
 
-  const handlePrint = () => {
-    console.log(formData)
-    if (
-      formData.Type &&
-      formData.address &&
-      formData.quantity
-    ) {
-     
+  const handlePrint = async () => {
+    setLoading(true)
+    if (formData.Type && formData.address && formData.quantity) {
       if (
         formData.Type === 'Rich' ||
         formData.Type === 'Toned' ||
         formData.Type === 'Smart' ||
         formData.Type === 'Skimmed'
       ) {
-        console.log("it mils")
-        if (formData.bookingDate ) {
-          console.log("it have date")
-          console.log(formData)
-          dispatch(productPurchase(formData))
+        if (formData.bookingDate) {
+          await dispatch(productPurchase(formData))
+          setLoading(true)
         } else {
-          console.log("not have date")
           setFormError({
             bookingDate: !formData.bookingDate,
           })
         }
-      }else{
-       
-        if(formData.sellerId !== null){
-     
-          dispatch(productPurchase(formData))
-        }else{
-          console.log(formData)
-          setFormError({sellerId: !formData.sellerId});
+      } else {
+        if (formData.sellerId !== null) {
+          await dispatch(productPurchase(formData))
+          setLoading(true)
+        } else {
+          setFormError({ sellerId: !formData.sellerId })
         }
       }
     } else {
       setFormError({
         Type: !formData.Type,
         address: !formData.address,
-        quantity: !formData.quantity
+        quantity: !formData.quantity,
       })
     }
   }
@@ -133,12 +125,11 @@ export default function ProductPage() {
     const fetchData = async () => {
       if (selectedGroceryItem.category !== 'Milk' && formData.Type) {
         try {
-          setLoading(true)
+          setSellerLoading(true)
           const sellers = await dispatch(findProductSellers(formData.Type))
+          setSellerLoading(false)
           setSellers(sellers)
-          setLoading(false)
         } catch (error) {
-          // Handle errors if needed
           console.error('Error fetching data:', error)
         }
       }
@@ -146,7 +137,6 @@ export default function ProductPage() {
 
     fetchData()
   }, [selectedGroceryItem.category, formData.Type, dispatch])
-  console.log(formError)
 
   return (
     <Stack
@@ -234,26 +224,38 @@ export default function ProductPage() {
           )}
           {formData.Type && selectedGroceryItem.category !== 'Milk' && (
             <FormControl sx={{ marginTop: '15px' }}>
-              <InputLabel id="milk-type-label">
-                Select Available Seller
-              </InputLabel>
-              {sellers.length > 0 ? (
-                <Select
-                  name="sellerId"
-                  value={formData.sellerId}
-                  label="seller Name"
-                  onChange={(e) => handleChange(e.target.name, e.target.value)}
-                >
-                  {sellers.map(({ seller, id }, index) => (
-                    <MenuItem key={id} value={id}>
-                      {seller}
-                    </MenuItem>
-                  ))}
-                </Select>
+              {sellerLoading ? (
+                <CircularProgress size={24} color="inherit" />
               ) : (
-                <Typography variant="body2" color="red">
-                  Currently not available
-                </Typography>
+                <>
+                  {sellers.length > 0 ? (
+                    <>
+                      <InputLabel id="milk-type-label">
+                        Select Available Seller
+                      </InputLabel>
+                      <Select
+                        name="sellerId"
+                        value={formData.sellerId}
+                        label="seller Name"
+                        onChange={(e) =>
+                          handleChange(e.target.name, e.target.value)
+                        }
+                      >
+                        {sellers.map(({ seller, id }, index) => (
+                          <MenuItem key={id} value={id}>
+                            {seller}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant="body2" color="red">
+                        Currently not available
+                      </Typography>
+                    </>
+                  )}
+                </>
               )}
             </FormControl>
           )}
@@ -288,7 +290,9 @@ export default function ProductPage() {
                   label="Booking Date"
                   value={formData.bookingDate}
                   onChange={(newDate) => handleChange('bookingDate', newDate)}
-                  renderInput={(params) => <TextField {...params}  error={formError.bookingDate}  />}
+                  renderInput={(params) => (
+                    <TextField {...params} error={formError.bookingDate} />
+                  )}
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -314,7 +318,7 @@ export default function ProductPage() {
             color="primary"
             onClick={handlePrint}
           >
-            BUY
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'BUY'}
           </Button>
         </FormControl>
       </Box>

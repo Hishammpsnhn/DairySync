@@ -6,6 +6,7 @@ import {
   Autocomplete,
   Button,
   Chip,
+  CircularProgress,
   Grid,
   Stack,
   TextField,
@@ -149,7 +150,8 @@ export default function BasicModal({
               spacing={{ xs: 2, md: 2 }}
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
-              {products.map((product, index) => (
+              {user.role === 'seller' && products.map((product, index) => (
+                
                 <Grid item xs={2} sm={2} md={2} key={index}>
                   <Chip
                     label={product.type}
@@ -256,7 +258,13 @@ export default function BasicModal({
               variant="contained"
               onClick={handleFormSubmit}
             >
-              {addMilk ? 'Sell' : 'Add product'}
+               {loading ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : addMilk ? (
+                    'Sell'
+                  ) : (
+                    'Add product'
+                  )}
             </Button>
           </Box>
         </Box>

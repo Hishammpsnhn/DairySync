@@ -13,8 +13,15 @@ export const login = ({ email, password }) => async (dispatch) => {
     dispatch(loginSuccess(data))
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
-    dispatch(loginFailure());
     console.error('Error:', error);
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.data.message;
+      console.error('Server Error Message:', errorMessage);
+      dispatch(loginFailure(errorMessage));
+    } else {
+      console.error('Generic Error');
+      dispatch(loginFailure("Something went wrong"));
+    }
   }
 };
 export const registerUser = (userData) => async (dispatch) => {
@@ -28,6 +35,15 @@ export const registerUser = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch(loginFailure());
     console.error('Error:', error);
+
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.data.message;
+      console.error('Server Error Message:', errorMessage);
+      dispatch(loginFailure(errorMessage));
+    } else {
+      console.error('Generic Error');
+      dispatch(loginFailure("Something went wrong"));
+    }
   }
 };
 
@@ -42,11 +58,19 @@ export const registerSeller = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch(loginFailure());
     console.error('Error:', error);
+
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.data.message;
+      console.error('Server Error Message:', errorMessage);
+      dispatch(loginFailure(errorMessage));
+    } else {
+      console.error('Generic Error');
+      dispatch(loginFailure("Something went wrong"));
+    }
   }
 };
 
 export const teams = async (dispatch, getState) => {
-  console.log("team called ")
   dispatch(fetchTeamListStart);
   try {
     const { user: { user } } = getState();
@@ -62,6 +86,14 @@ export const teams = async (dispatch, getState) => {
     dispatch(fetchTeamListSuccess(data))
   } catch (error) {
     console.error('Error:', error);
-    dispatch(fetchTeamListFailure(error));
+
+    if (error.response && error.response.data) {
+      const errorMessage = error.response.data.message;
+      console.error('Server Error Message:', errorMessage);
+      dispatch(fetchTeamListFailure(errorMessage));
+    } else {
+      console.error('Generic Error');
+      dispatch(fetchTeamListFailure("Something went wrong"));
+    }
   }
 };

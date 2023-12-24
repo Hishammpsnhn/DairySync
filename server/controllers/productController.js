@@ -46,15 +46,16 @@ export const addProduct = expressAsyncHandler(async (req, res) => {
                     { upsert: true }
                 );
                 console.log(ret);
-                if (product)
-                    res.status(200).json(product)
+                const Milkdata = await Milk.findOne({});
+                if (Milkdata && product)
+                    res.status(200).json(Milkdata)
             }
         } else {
             const existingProduct = await Product.findOne({
                 sellerId,
                 type,
             });
-    
+
             if (existingProduct) {
                 return res.status(400).json({ success: false, error: 'Product already exists for this seller and type' });
             }
@@ -194,7 +195,7 @@ export const updateOrder = async (req, res) => {
 };
 export const getproduct = async (req, res) => {
     const userId = req.user.id;
- 
+
     try {
         const result = await Product.find({
             sellerId: userId,
@@ -211,7 +212,7 @@ export const getproduct = async (req, res) => {
 export const deleteSellerProduct = async (req, res) => {
     const userId = req.user.id;
     const productId = req.params.id;
-    console.log(userId,productId);
+    console.log(userId, productId);
 
     try {
         const deletedProduct = await Product.findOneAndDelete({

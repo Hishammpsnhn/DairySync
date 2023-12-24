@@ -16,10 +16,12 @@ const addProductSlice = createSlice({
     addProductSuccess: (state, action) => {
       state.loading = false;
       state.products = [...state.products, action.payload];
+      state.error = null;
     },
     ProductSuccessFetch: (state, action) => {
       state.products = action.payload;
       state.loading = false;
+      state.error = null;
     },
     deleteProduct: (state, action) => {
       state.loading = false;

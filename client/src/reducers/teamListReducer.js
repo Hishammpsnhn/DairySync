@@ -11,11 +11,12 @@ const teamListSlice = createSlice({
   reducers: {
     fetchTeamListStart: (state) => {
       state.loading = true;
-      state.error = null; // Reset any previous error
+      state.error = null; 
     },
     fetchTeamListSuccess: (state, action) => {
       state.users = action.payload;
       state.loading = false;
+      state.error = null; 
     },
     fetchTeamListFailure: (state, action) => {
       state.loading = false;
