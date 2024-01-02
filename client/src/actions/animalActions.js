@@ -1,5 +1,5 @@
 import axios from "axios";
-import { fetchAnimalListFailure, fetchAnimalListStart, fetchAnimalListSuccess } from "../reducers/animalListReducer";
+import {  fetchAnimalListStart, fetchAnimalListSuccess,fetchAnimalListFailure } from "../reducers/animalListReducer";
 
 export const animalList = async (dispatch,getState) => {
     dispatch(fetchAnimalListStart)
@@ -14,8 +14,24 @@ export const animalList = async (dispatch,getState) => {
         const {data} = await axios.get(`/api/animal/${user._id}`,config);
         dispatch(fetchAnimalListSuccess(data))
     } catch (error) {
-        dispatch(fetchAnimalListFailure(error))
-        console.log("Error getting",error)
+       console.log("error");
+        if (error.response && error.response.data) {
+            console.log("error");
+            const errorMessage = error.response.data.message;
+            if(errorMessage){
+                console.log("error");
+             console.error('Server Error Message:', errorMessage);
+            dispatch(fetchAnimalListFailure(errorMessage))
+            }else{
+                console.log("error");
+             console.error('Network issue:', errorMessage);
+            dispatch(fetchAnimalListFailure("somthing wrong in Network"))
+            }
+          } else {
+            console.log("error");
+            console.error('Generic Error');
+            dispatch(fetchAnimalListFailure("Something went wrong"))
+          }
     }
 }
 

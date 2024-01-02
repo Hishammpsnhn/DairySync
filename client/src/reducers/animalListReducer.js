@@ -17,7 +17,8 @@ const animalListSlice = createSlice({
             state.animals = action.payload;
             state.loading = false;
         },
-        fetchanimalListFailure: (state, action) => {
+        fetchAnimalListFailure: (state, action) => {
+            console.log(action.payload);
             state.loading = false;
             state.error = action.payload;
         },

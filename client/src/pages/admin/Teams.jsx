@@ -20,7 +20,7 @@ const Sellers = () => {
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
-  const [currentModelId,setCurrentModelId] = useState(null)
+  const [currentModelId, setCurrentModelId] = useState(null)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -80,9 +80,12 @@ const Sellers = () => {
       flex: 1,
       renderCell: ({ row }) => {
         const handleAccessLevelClick = (userId) => {
-          // Implement your logic here to handle the click event and get the user's ID (userId)
-          setCurrentModelId(userId)
-          handleOpen()
+          console.log(row)
+          if (row.access === 'seller') {
+            // Implement your logic here to handle the click event and get the user's ID (userId)
+            setCurrentModelId(userId)
+            handleOpen()
+          }
         }
 
         return (
@@ -153,7 +156,12 @@ const Sellers = () => {
           loading={loading}
           error={error}
         />
-        <BasicModal open={open} setOpen={setOpen} handleClose={handleClose} id={currentModelId}/>
+        <BasicModal
+          open={open}
+          setOpen={setOpen}
+          handleClose={handleClose}
+          id={currentModelId}
+        />
       </Box>
     </Box>
   )

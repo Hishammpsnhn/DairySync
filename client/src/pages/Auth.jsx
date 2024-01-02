@@ -25,7 +25,7 @@ export default function Auth() {
   const { isAuthenticated, user, loading, error } = useSelector(
     (state) => state.user
   )
-
+console.log(isAuthenticated,user)
   const [isLogin, setIsLogin] = React.useState(false)
 
   const handleFormSubmit = (values) => {

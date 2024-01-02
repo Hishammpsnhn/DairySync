@@ -19,12 +19,14 @@ const Topbar = () => {
   return (
     <Box display="flex" justifyContent="space-between" p={2} height="10%">
       {/* search Bar */}
-      <Box display="flex" borderRadius="3px" bgcolor={colors.primary[400]}>
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton>
-          <SearchIcon />
-        </IconButton>
-      </Box>
+      {isAuthenticated ? (
+        <Box display="flex" borderRadius="3px" bgcolor={colors.primary[400]}>
+          <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
+          <IconButton>
+            <SearchIcon />
+          </IconButton>
+        </Box>
+      ):<Box display='flex'></Box>}
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === 'dark' ? (

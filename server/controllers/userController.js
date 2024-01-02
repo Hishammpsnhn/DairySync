@@ -65,9 +65,9 @@ export const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     res.status(200).json({
       _id: user._id,
-      name: user.name,
+      name: user.userName,
       email: user.email,
-      isAdmin: user.isAdmin,
+      role: user.role,
       token: generateToken(user._id),
     })
   } else {
@@ -95,4 +95,48 @@ export const getUsers = asyncHandler(async (req, res) => {
     throw new Error("Something went wrong")
   }
 
+})
+
+export const addSeller = asyncHandler(async (req, res) => {
+console.log("addSeller")
+  const { firstName, lastName, userName, email, password, contact, city, postalCode, street, role } = req.body.userData;
+
+  const userUsername = userName || (firstName + lastName);
+  const userRole = role || 'user';
+  if (!userUsername || !email || !password || !contact) {
+    res.status(404)
+    throw new Error("credentials missing or invalid");
+  }
+
+  const userExists = await User.findOne({ email })
+
+  if (userExists) return res.status(400).json({ message: 'User with this email already exists' });
+
+
+
+  const user = await User.create({
+    userName: userUsername,
+    email,
+    password,
+    contactno: contact,
+    role: userRole,
+    address: {
+      city,
+      postalCode,
+      street,
+    },
+  })
+
+  if (user) {
+    res.status(200).json({
+      _id: user._id,
+      name: user.userName,
+      email: user.email,
+      role: user.role,
+      token: generateToken(user._id),
+    })
+  } else {
+    res.status(400)
+    throw new Error("Invalid user data")
+  }
 })

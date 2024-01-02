@@ -43,11 +43,10 @@ function App() {
               {/* Admin */}
               <Route path="/" element={<Auth />} />
               {user?.role !== "user" && <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />}
-
               <Route path='/teams' element={<RequireAuth><Teams /></RequireAuth>} />
               <Route path='/line' element={<RequireAuth><LineChart /></RequireAuth>} />
               <Route path='/bar' element={<RequireAuth><BarChart /></RequireAuth>} />
-              <Route path='/form' element={<RequireAuth><SellerRegForm /></RequireAuth>} />
+              <Route path='/addSeller' element={<RequireAuth><SellerRegForm /></RequireAuth>} />
 
               {/* Seller */}
               <Route path="/cattle-details" element={<RequireAuth><CattleDetailsPage /></RequireAuth>} />

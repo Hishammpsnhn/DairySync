@@ -1,24 +1,34 @@
-import { Box, Button, TextField } from '@mui/material'
+import { Alert, AlertTitle, Box, Button, CircularProgress, TextField } from '@mui/material'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Header from '../../components/Header'
 import { registerSeller } from '../../actions/userActions'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useState } from 'react'
 
 const SellerRegForm = () => {
   const isNonMobile = useMediaQuery('(min-width:600px)')
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const { error } = useSelector((state) => state.user)
+  const [loading, setLoading] = useState(false)
 
-  const handleFormSubmit = (values, { resetForm }) => {
-    dispatch(registerSeller(values));
-    resetForm({ values: initialValues });
-  };
+  const handleFormSubmit = async(values, { resetForm }) => {
+    setLoading(true)
+    await dispatch(registerSeller(values))
+    setLoading(false);
+    resetForm({ values: initialValues })
+  }
 
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
-
+      <Header title="ADD SELLER" subtitle="Create a New Seller Profile" />
+      {error && (
+        <Alert sx={{ width: '100%', margin: '10px' }} severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {error}
+        </Alert>
+      )}
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -148,7 +158,7 @@ const SellerRegForm = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New User
+              {loading ?( <CircularProgress size={24} color="inherit" />):"Create New User"}
               </Button>
             </Box>
           </form>
@@ -166,8 +176,8 @@ const checkoutSchema = yup.object().shape({
   lastName: yup.string().required('required'),
   email: yup.string().email('invalid email').required('required'),
   password: yup
-  .string('Enter your password')
-  .min(8, 'Password should be of minimum 8 characters length'),
+    .string('Enter your password').required('required')
+    .min(8, 'Password should be of minimum 8 characters length'),
   contact: yup
     .string()
     .matches(phoneRegExp, 'Phone number is not valid')
@@ -188,7 +198,7 @@ const initialValues = {
   street: '',
   city: '',
   postalCode: '',
-  role:'seller'
+  role: 'seller',
 }
 
 export default SellerRegForm

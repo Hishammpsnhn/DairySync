@@ -117,7 +117,7 @@ function Sidebar() {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-              <Avatar sx={{height:'80px',width:"80px",fontSize:"50px"}}>{user?.name.charAt(0).toUpperCase()}</Avatar>
+              <Avatar sx={{height:'80px',width:"80px",fontSize:"50px"}}>{user?.name?.charAt(0).toUpperCase()}</Avatar>
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -198,8 +198,8 @@ function Sidebar() {
             </Typography>
             {user?.role === 'admin' && (
               <Item
-                title="Profile Form"
-                to="/form"
+                title="Add Seller"
+                to="/addSeller"
                 icon={<PersonOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}

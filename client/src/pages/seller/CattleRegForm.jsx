@@ -1,5 +1,14 @@
 import { useTheme } from '@emotion/react'
-import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material'
+import {
+  Alert,
+  AlertTitle,
+  Autocomplete,
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useState } from 'react'
 import { tokens } from '../../theme'
@@ -17,7 +26,7 @@ const CattleRegForm = () => {
   const [formError, setFormError] = useState(initialErrValues)
   const [secondAutocompleteOptions, setSecondAutocompleteOptions] = useState([])
   const user = useSelector((state) => state.user.user)
-
+  const [loading, setLoading] = useState(false)
   const handleFieldChange = (fieldName) => (event, newValue) => {
     const updatedValue = event
       ? event.target
@@ -39,7 +48,7 @@ const CattleRegForm = () => {
     }
   }
 
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async () => {
     if (
       formData.breed &&
       formData.breedingStatus &&
@@ -50,7 +59,11 @@ const CattleRegForm = () => {
       formData.animalType &&
       formData.healthCondition
     ) {
-      registerAnimal(formData,user._id)
+      setLoading(true)
+      await registerAnimal(formData, user._id)
+      setFormData(initialValues)
+      setFormError(initialErrValues)
+      setLoading(false)
     } else {
       setFormError({
         breed: !formData.breed,
@@ -279,7 +292,11 @@ const CattleRegForm = () => {
             variant="contained"
             onClick={handleFormSubmit}
           >
-            Add New Cattle
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              'Add New Cattle'
+            )}
           </Button>
         </Box>
       </form>
@@ -287,8 +304,6 @@ const CattleRegForm = () => {
   )
 }
 export default CattleRegForm
-
-
 
 const initialValues = {
   animalType: '',

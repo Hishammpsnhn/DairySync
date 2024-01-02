@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import CattleDetails from '../../components/CattleDetails'
-import { Box, CircularProgress, Grid } from '@mui/material'
+import { Alert, AlertTitle, Box, CircularProgress, Grid } from '@mui/material'
 import { useTheme } from '@emotion/react'
 import { tokens } from '../../theme'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,11 +12,19 @@ const CattleDetailsPage = () => {
   const colors = tokens(theme.palette.mode)
   const dispatch = useDispatch()
   const { loading, animals, error } = useSelector((state) => state.animalList)
-
+ console.log(loading, animals,error)
   useEffect(() => {
     dispatch(animalList)
   }, [dispatch])
 
+  if (error) {
+    return (
+      <Alert sx={{ width: '100%', margin: '10px' }} severity="error">
+        <AlertTitle>Error</AlertTitle>
+        {error}
+      </Alert>
+    )
+  }
   return (
     <Box m="20px" overflow="auto">
       <Header title="CATTLE DETAILS" subtitle="Managing the Cattle Details" />
