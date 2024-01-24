@@ -127,6 +127,7 @@ export default function ProductPage() {
         try {
           setSellerLoading(true)
           const sellers = await dispatch(findProductSellers(formData.Type))
+          console.log(sellers)
           setSellerLoading(false)
           setSellers(sellers)
         } catch (error) {
@@ -228,7 +229,7 @@ export default function ProductPage() {
                 <CircularProgress size={24} color="inherit" />
               ) : (
                 <>
-                  {sellers.length > 0 ? (
+                  {sellers?.length > 0 ? (
                     <>
                       <InputLabel id="milk-type-label">
                         Select Available Seller

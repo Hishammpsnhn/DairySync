@@ -8,7 +8,9 @@ import expressAsyncHandler from "express-async-handler";
 // @route   POST /api/product/:id
 // @access  Private/admin
 export const addProduct = expressAsyncHandler(async (req, res) => {
+   
     const sellerId = req.params.id;
+    console.log("add product",sellerId)
     try {
         const { category, type, quantity, animalId, quality } = req.body.formData;
         console.log(category, type, quantity, animalId)
@@ -149,8 +151,10 @@ export const purchase = expressAsyncHandler(async (req, res) => {
 });
 
 export const myOrders = expressAsyncHandler(async (req, res) => {
+    console.log("this is my orders")
     try {
         const user = req.user;
+        console.log(user)
         if (user.role === 'user') {
             const myOrders = await Orders.find({ userId: user._id }).populate('sellerId').sort({ delivered: 1 });
             if (myOrders) {
@@ -194,13 +198,15 @@ export const updateOrder = async (req, res) => {
     }
 };
 export const getproduct = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.params.id;
+    console.log(userId)
 
     try {
         const result = await Product.find({
             sellerId: userId,
             type: { $exists: true }
         });
+        console.log(result)
         if (result) {
             res.status(200).json(result);
         }
@@ -210,8 +216,8 @@ export const getproduct = async (req, res) => {
     }
 };
 export const deleteSellerProduct = async (req, res) => {
-    const userId = req.user.id;
-    const productId = req.params.id;
+    const userId = req.params.userId;
+    const productId = req.params.productId;
     console.log(userId, productId);
 
     try {

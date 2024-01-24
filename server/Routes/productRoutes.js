@@ -5,12 +5,12 @@ import { addProduct,ProductSellers,purchase ,myOrders,updateOrder,getproduct,del
 
 const router = express.Router();
 
-router.route('/purchase').post(protect,purchase);
-router.route('/:id').post(protect,addProduct);
-router.route('/').get(protect,getproduct)
-router.route('/:id').delete(protect,deleteSellerProduct);
+router.route('/purchase').post(protect, purchase);
+router.route('/:userId/:productId').delete(protect, deleteSellerProduct);
+router.route('/:id').post(protect, addProduct);
+router.route('/myorders/:id').get(protect, updateOrder);
+router.route('/myorders').get(protect, myOrders);
 router.route('/sellers').get(ProductSellers);
-router.route('/myorders').get(protect,myOrders)
-router.route('/myorders/:id').get(protect,updateOrder)
+router.route('/:id').get(protect, getproduct);
 
 export default router
