@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import ProductCard from '../../components/Card'
-import { Box, Grid, Paper } from '@mui/material'
+import { Box, Grid, Paper, Typography } from '@mui/material'
 import { experimentalStyled as styled } from '@mui/material/styles'
 import { tokens } from '../../theme'
 import { useTheme } from '@emotion/react'
@@ -10,6 +10,8 @@ import ghee from '../../assets/ghee.jpg'
 import paneer from '../../assets/how-to-make-paneer-1.jpg'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import Carousel from 'react-material-ui-carousel'
+import CarouselCom from '../../components/Carousal'
 const Products = [
   { name: 'milk', image: milk },
   { name: 'ghee', image: ghee },
@@ -31,6 +33,10 @@ const Home = () => {
   }
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <CarouselCom/>
+      <Typography variant='h1' style={{ paddingLeft: '20px' }}>
+            PRODUCTS
+        </Typography>
       <Grid
         container
         spacing={{ xs: 2, md: 3 }}

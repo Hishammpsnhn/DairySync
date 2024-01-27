@@ -1,4 +1,4 @@
-import { Box, IconButton, InputBase, useTheme } from '@mui/material'
+import { Box, IconButton, InputBase, Typography, useTheme } from '@mui/material'
 import React, { useContext } from 'react'
 import { ColorModeContext, tokens } from '../../theme'
 import SearchIcon from '@mui/icons-material/Search'
@@ -27,6 +27,7 @@ const Topbar = () => {
           </IconButton>
         </Box>
       ):<Box display='flex'></Box>}
+      <Typography variant='h2' sx={{fontWeight:'600'}}>DAIRY SYNC</Typography>
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === 'dark' ? (
