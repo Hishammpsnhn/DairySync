@@ -27,6 +27,17 @@ const milkSchema = new mongoose.Schema({
   bookingDate:{
     type:Date
   },
+  price:{
+    type: Number,
+    required: true,
+  },
+  paymentMethod:{
+    type:String,
+    required: true,
+  },
+  payment:{
+    type:Boolean,
+  },
   delivered: {
     type: Boolean,
     default: false, // Assuming initially the order is not delivered

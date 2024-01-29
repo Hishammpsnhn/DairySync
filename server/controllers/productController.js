@@ -3,14 +3,15 @@ import Animal from "../models/animalModel.js";
 import Milk from "../models/milkModal.js";
 import Product from "../models/productModel.js";
 import expressAsyncHandler from "express-async-handler";
+import Razorpay from 'razorpay'
 
 // @desc    Add Product
 // @route   POST /api/product/:id
 // @access  Private/admin
 export const addProduct = expressAsyncHandler(async (req, res) => {
-   
+
     const sellerId = req.params.id;
-    console.log("add product",sellerId)
+    console.log("add product", sellerId)
     try {
         const { category, type, quantity, animalId, quality } = req.body.formData;
         console.log(category, type, quantity, animalId)
@@ -119,35 +120,64 @@ export const ProductSellers = expressAsyncHandler(async (req, res) => {
 // @access  Private
 export const purchase = expressAsyncHandler(async (req, res) => {
 
-    const { Type, quantity, paymentMethod, address, bookingDate, sellerId, category } = req.body.formData;
+    const { Type, quantity, paymentMethod, address, bookingDate, sellerId, category, price } = req.body.formData;
     const userId = req.user._id; // Adjust based on your authentication setup
 
-    if (category === 'skimmed' || category === 'rich' || category === 'toned' || category === 'smart') {
-        await Milk.updateOne(
-            {},
-            {
-                $inc: {
-                    [`${category}.quantity`]: -quantity,
+    if (paymentMethod !== 'COD') {
+        try {
+            const razorpay = new Razorpay({
+                key_id: "rzp_test_M05VBThvR3P0DV",
+                key_secret: "URrFVJ3ouN4XBqBhGfT6KEm9",
+            });
+
+            const options = {
+                amount: price,
+                currency: "INR",
+                receipt: "receipt#1",
+            };
+            const order = await razorpay.orders.create(options);
+
+            if (!order) {
+                return res.status(500).send("Error");
+            }
+
+            res.json(order);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send("Error");
+        }
+
+    } else {
+
+        if (category === 'skimmed' || category === 'rich' || category === 'toned' || category === 'smart') {
+            await Milk.updateOne(
+                {},
+                {
+                    $inc: {
+                        [`${category}.quantity`]: -quantity,
+                    },
                 },
-            },
-            { upsert: true }
-        );
+                { upsert: true }
+            );
+        }
+
+        const newOrder = new Orders({
+            address,
+            userId,
+            sellerId,
+            bookingDate: bookingDate,
+            productType: Type ? Type : category,
+            quantity,
+            delivered: false,
+            payment: false,
+            paymentMethod,
+            price
+        });
+
+        await newOrder.save();
+
+        res.status(201).json({ message: 'Order placed successfully', order: newOrder });
     }
-
-    const newOrder = new Orders({
-        address,
-        userId,
-        sellerId,
-        bookingDate: bookingDate,
-        productType: Type ? Type : category,
-        quantity,
-        delivered: false,
-    });
-
-    await newOrder.save();
-
-    res.status(201).json({ message: 'Order placed successfully', order: newOrder });
-
 });
 
 export const myOrders = expressAsyncHandler(async (req, res) => {
@@ -238,3 +268,23 @@ export const deleteSellerProduct = async (req, res) => {
     }
 };
 
+export const orderValidate = async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+        req.body;
+
+    const sha = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET);
+    //order_id + "|" + razorpay_payment_id
+    sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const digest = sha.digest("hex");
+    if (digest !== razorpay_signature) {
+        return res.status(400).json({ msg: "Transaction is not legit!" });
+    }
+
+    res.json({
+        msg: "success",
+        orderId: razorpay_order_id,
+        paymentId: razorpay_payment_id,
+    });
+
+    
+};

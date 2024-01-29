@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { json, useParams } from 'react-router-dom'
 import { groceryItems } from '../../utils/Data'
 import milk from '../../assets/milk.png'
 import butter from '../../assets/Butter.webp'
@@ -38,6 +38,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import {
   findProductSellers,
   productPurchase,
+  validateRazorpay,
 } from '../../actions/productAction'
 import { useDispatch } from 'react-redux'
 
@@ -75,7 +76,8 @@ export default function ProductPage() {
     quantity: '',
     paymentMethod: 'COD',
     address: '',
-    bookingDate: '', // New field for booking date
+    bookingDate: '',
+    price: '',
     sellerId: null,
   })
   const [formError, setFormError] = useState(initialErrValues)
@@ -87,30 +89,124 @@ export default function ProductPage() {
     }))
   }
 
-  const handlePrint = async () => {
+  function razPayment(e, amount, order) {
+    var options = {
+      key: 'rzp_test_M05VBThvR3P0DV', // Enter the Key ID generated from the Dashboard
+      amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: 'INR',
+      name: 'Dairy sync', //your business name
+      description: 'Test Transaction',
+      image: 'https://example.com/your_logo',
+      order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      handler: async function (response) {
+        const body = {
+          ...response,
+        }
+        const validateRes = await dispatch(
+          validateRazorpay(JSON.stringify(body))
+        )
+        const jsonRes = await validateRes.json()
+        console.log(jsonRes)
+      },
+      prefill: {
+        //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+        name: 'Hisham', //your customer's name
+        email: 'hishammmpsn@gmail.com',
+        contact: '9656753610', //Provide the customer's phone number for better conversion rates
+      },
+      notes: {
+        address: 'Razorpay Corporate Office',
+      },
+      theme: {
+        color: '#3399cc',
+      },
+    }
+    var rzp1 = new window.Razorpay(options)
+    rzp1.on('payment.failed', function (response) {
+      alert(response.error.code)
+      alert(response.error.description)
+      alert(response.error.source)
+      alert(response.error.step)
+      alert(response.error.reason)
+      alert(response.error.metadata.order_id)
+      alert(response.error.metadata.payment_id)
+    })
+    rzp1.open()
+    e.preventDefault()
+  }
+  const handlePrint = async (e) => {
     setLoading(true)
+
     if (formData.Type && formData.address && formData.quantity) {
-      if (
-        formData.Type === 'Rich' ||
-        formData.Type === 'Toned' ||
-        formData.Type === 'Smart' ||
-        formData.Type === 'Skimmed'
-      ) {
-        if (formData.bookingDate) {
-          await dispatch(productPurchase(formData))
-          setLoading(true)
+      // Check if quantity is a positive number
+      if (!isNaN(formData.quantity) && formData.quantity > 0) {
+        // Find the selected product in groceryItems
+        const selectedProduct = groceryItems.find((category) =>
+          category.types.some((type) => type.type === formData.Type)
+        )
+
+        if (selectedProduct) {
+          // Find the selected type within the product
+          const selectedType = selectedProduct.types.find(
+            (type) => type.type === formData.Type
+          )
+
+          if (selectedType) {
+            // Calculate total price based on quantity
+            formData.price = formData.quantity * selectedType.price
+
+            if (
+              (formData.Type === 'Rich' ||
+                formData.Type === 'Toned' ||
+                formData.Type === 'Smart' ||
+                formData.Type === 'Skimmed') &&
+              formData.bookingDate
+            ) {
+              const data = await dispatch(productPurchase(formData))
+              if (formData.paymentMethod !== 'COK') {
+                razPayment(e, formData.price, data)
+              }
+              setLoading(false)
+            } else if (
+              formData.Type !== 'Rich' &&
+              formData.Type !== 'Toned' &&
+              formData.Type !== 'Smart' &&
+              formData.Type !== 'Skimmed' &&
+              formData.sellerId !== null
+            ) {
+              if (formData.paymentMethod !== 'COK') {
+                const data = await dispatch(productPurchase(formData))
+                razPayment(e, formData.price, data)
+              }
+              setLoading(false)
+            } else {
+              setFormError({
+                bookingDate:
+                  !formData.bookingDate &&
+                  (formData.Type === 'Rich' ||
+                    formData.Type === 'Toned' ||
+                    formData.Type === 'Smart' ||
+                    formData.Type === 'Skimmed'),
+                sellerId:
+                  !formData.sellerId &&
+                  formData.Type !== 'Rich' &&
+                  formData.Type !== 'Toned' &&
+                  formData.Type !== 'Smart' &&
+                  formData.Type !== 'Skimmed',
+              })
+            }
+          }
         } else {
           setFormError({
-            bookingDate: !formData.bookingDate,
+            Type: true,
+            address: !formData.address,
+            quantity: !formData.quantity,
           })
         }
       } else {
-        if (formData.sellerId !== null) {
-          await dispatch(productPurchase(formData))
-          setLoading(true)
-        } else {
-          setFormError({ sellerId: !formData.sellerId })
-        }
+        setFormError({
+          quantity: true,
+        })
       }
     } else {
       setFormError({
@@ -163,9 +259,17 @@ export default function ProductPage() {
           image={image}
           title="green iguana"
         />
-        {selectedGroceryItem.types.map(({ description, type }, index) => (
-          <AlignItemsList key={index} desc={description} type={type} />
-        ))}
+        {selectedGroceryItem.types.map(
+          ({ description, type, price }, index) => (
+            <AlignItemsList
+              key={index}
+              desc={description}
+              type={type}
+              price={price}
+              category={selectedGroceryItem.category}
+            />
+          )
+        )}
       </Box>
       {/* column 2 */}
 
@@ -319,7 +423,7 @@ export default function ProductPage() {
             color="primary"
             onClick={handlePrint}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : 'BUY'}
+            {loading ? <CircularProgress size={24} color="inherit" /> : `BUY`}
           </Button>
         </FormControl>
       </Box>
@@ -327,12 +431,14 @@ export default function ProductPage() {
   )
 }
 
-function AlignItemsList({ type, desc }) {
+function AlignItemsList({ type, desc, price, category }) {
+  const displayPrice = category === 'Milk' ? ` ( ${price}/L )` : `(${price}/KG)` // Display price per liter only for Milk category
+
   return (
     <List sx={{ width: '100%' }}>
       <ListItem alignItems="flex-start">
         <ListItemText
-          primary={type}
+          primary={`${type}${displayPrice}`}
           secondary={<React.Fragment>{desc}</React.Fragment>}
         />
       </ListItem>

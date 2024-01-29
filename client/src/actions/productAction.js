@@ -65,6 +65,7 @@ export const findProductSellers = (type) => async (dispatch, getState) => {
 
 
 export const productPurchase = (formData) => async (dispatch, getState) => {
+    console.log(formData)
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
@@ -78,6 +79,7 @@ export const productPurchase = (formData) => async (dispatch, getState) => {
 
         const { data } = await axios.post('/api/product/purchase', { formData }, config);
         console.log(data);
+      
         return data;
         // dispatch(addProductSuccess(data));
     } catch (error) {
@@ -164,7 +166,7 @@ export const OrderUpdate = (id) => async (dispatch, getState) => {
 //         };
 //         console.log(config);
 //         const { data } = await axios.get(`/api/product`, config);
-   
+
 //         dispatch(ProductSuccessFetch(data));
 //     } catch (error) {
 //         console.error('Error:', error);
@@ -179,36 +181,36 @@ export const OrderUpdate = (id) => async (dispatch, getState) => {
 //         }
 //     }
 // };
-export const getproductById =  (id)=> async (dispatch, getState) => {
+export const getproductById = (id) => async (dispatch, getState) => {
     console.log('Getting Product');
     dispatch(addProductStart());
-   try {
-       const { user: { user } } = getState();
+    try {
+        const { user: { user } } = getState();
 
-       const config = {
-           headers: {
-               'Content-Type': 'application/json',
-               Authorization: `Bearer ${user?.token}`,
-           },
-       };
-       console.log(config);
-       const { data } = await axios.get(`/api/product/${id}`, config);
-  console.log(data);
-       dispatch(ProductSuccessFetch(data));
-   } catch (error) {
-       console.error('Error:', error);
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user?.token}`,
+            },
+        };
+        console.log(config);
+        const { data } = await axios.get(`/api/product/${id}`, config);
+        console.log(data);
+        dispatch(ProductSuccessFetch(data));
+    } catch (error) {
+        console.error('Error:', error);
 
-       if (error.response && error.response.data) {
-           const errorMessage = error.response.data.message;
-           console.error('Server Error Message:', errorMessage);
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.message;
+            console.error('Server Error Message:', errorMessage);
             dispatch(addProductFailure(errorMessage));
-       } else {
-           console.error('Generic Error');
-           dispatch(addProductFailure("Something went wrong"));
-       }
-   }
+        } else {
+            console.error('Generic Error');
+            dispatch(addProductFailure("Something went wrong"));
+        }
+    }
 };
-export const deleteSellerProduct = (userId,productId) => async (dispatch, getState) => {
+export const deleteSellerProduct = (userId, productId) => async (dispatch, getState) => {
     try {
         dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
@@ -233,6 +235,31 @@ export const deleteSellerProduct = (userId,productId) => async (dispatch, getSta
         } else {
             console.error('Generic Error');
             dispatch(addProductFailure("Something went wrong"));
+        }
+    }
+};
+export const validateRazorpay = (data) => async ( dispatch,getState) => {
+    try {
+      
+        const { user: { user } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user?.token}`,
+            },
+        };
+        const { data } = await axios.post(`/api/product/order/validate`, config);
+        return data;
+        
+    } catch (error) {
+        console.error('Error:', error);
+
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.message;
+            console.error('Server Error Message:', errorMessage);
+        } else {
+            console.error('Generic Error');
         }
     }
 };
