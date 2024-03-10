@@ -93,6 +93,8 @@ console.log(products)
   const handleFormSubmit = () => {
     if (addMilk) {
       if (formData.category && formData.quantity) {
+        console.log(formData)
+        formData.price = 
         dispatch(productPurchase(formData))
         setFormData(initialValues)
         handleClose()
@@ -295,6 +297,7 @@ const initialValues = {
   quantity: '',
   animalId: '',
   quality: '',
+  price:''
 }
 const initialErrValues = {
   category: false,

@@ -122,8 +122,8 @@ export const purchase = expressAsyncHandler(async (req, res) => {
 
     const { Type, quantity, paymentMethod, address, bookingDate, sellerId, category, price } = req.body.formData;
     const userId = req.user._id; // Adjust based on your authentication setup
-
-    if (paymentMethod !== 'COD') {
+    console.log(req.body)
+    if (paymentMethod && paymentMethod === 'Online Payment') {
         try {
             const razorpay = new Razorpay({
                 key_id: "rzp_test_M05VBThvR3P0DV",
@@ -131,7 +131,7 @@ export const purchase = expressAsyncHandler(async (req, res) => {
             });
 
             const options = {
-                amount: price,
+                amount: 1000,
                 currency: "INR",
                 receipt: "receipt#1",
             };
@@ -171,7 +171,7 @@ export const purchase = expressAsyncHandler(async (req, res) => {
             delivered: false,
             payment: false,
             paymentMethod,
-            price
+            price: price ? price : 0
         });
 
         await newOrder.save();
@@ -218,7 +218,18 @@ export const updateOrder = async (req, res) => {
             { $set: { delivered: true } },
             { new: true } // Return the modified document rather than the original
         );
-
+        const qty = updatedOrder.quantity;
+        console.log("updated",updatedOrder)
+        const data = await Milk.updateOne(
+            {},
+            {
+                $inc: {
+                    [`${updatedOrder.productType.toLowerCase()}.quantity`]: -qty,
+                },
+            },
+            { upsert: true }
+        );
+            console.log("data is ",data)
         if (updatedOrder) {
             res.status(200).json({ success: true, data: updatedOrder });
         }
@@ -286,5 +297,5 @@ export const orderValidate = async (req, res) => {
         paymentId: razorpay_payment_id,
     });
 
-    
+
 };

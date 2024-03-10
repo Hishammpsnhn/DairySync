@@ -90,6 +90,7 @@ export default function ProductPage() {
   }
 
   function razPayment(e, amount, order) {
+    console.log(e,amount,order)
     var options = {
       key: 'rzp_test_M05VBThvR3P0DV', // Enter the Key ID generated from the Dashboard
       amount: amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -136,6 +137,7 @@ export default function ProductPage() {
   }
   const handlePrint = async (e) => {
     setLoading(true)
+    console.log(formData)
 
     if (formData.Type && formData.address && formData.quantity) {
       // Check if quantity is a positive number
@@ -163,7 +165,8 @@ export default function ProductPage() {
               formData.bookingDate
             ) {
               const data = await dispatch(productPurchase(formData))
-              if (formData.paymentMethod !== 'COK') {
+              console.log(data)
+              if (formData.paymentMethod === 'Online Payment' && data) {
                 razPayment(e, formData.price, data)
               }
               setLoading(false)
@@ -174,7 +177,7 @@ export default function ProductPage() {
               formData.Type !== 'Skimmed' &&
               formData.sellerId !== null
             ) {
-              if (formData.paymentMethod !== 'COK') {
+              if (formData.paymentMethod === 'Online Payment') {
                 const data = await dispatch(productPurchase(formData))
                 razPayment(e, formData.price, data)
               }

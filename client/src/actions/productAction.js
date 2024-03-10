@@ -66,6 +66,7 @@ export const findProductSellers = (type) => async (dispatch, getState) => {
 
 export const productPurchase = (formData) => async (dispatch, getState) => {
     console.log(formData)
+    
     try {
         // dispatch(addProductStart()); // Corrected dispatch invocation
         const { user: { user } } = getState();
